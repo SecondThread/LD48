@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import {useLocation, useHistory } from 'react-router-dom';
 import {toast} from 'react-toastify';
 import './TitleScreen.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 const requestOptions = {
   method: 'POST',
