@@ -1,13 +1,15 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'react-toastify/dist/ReactToastify.css';
+import './index.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import reportWebVitals from './reportWebVitals';
 import TitleScreen from './titleScreen/TitleScreen';
 import RoomScreen from './roomScreen/RoomScreen';
 import GameScreen from './gameScreen/GameScreen';
-import {Router, Route } from 'react-router';
+import { Router, Route} from 'react-router';
 import { createBrowserHistory } from 'history';
+import { ToastContainer } from 'react-toastify';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -16,6 +18,7 @@ ReactDOM.render(
       <Route path = "/room/:roomId" component = {RoomScreen} />
       <Route path = "/game/:gameId" component = {GameScreen} />
     </Router>
+    <ToastContainer/>
   </React.StrictMode>,
   document.getElementById('root')
 );

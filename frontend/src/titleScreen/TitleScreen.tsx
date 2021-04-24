@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import {useLocation, useHistory} from 'react-router-dom';
+import {toast} from 'react-toastify';
 import './TitleScreen.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -16,6 +18,20 @@ function onClickCreatePrivateRoom(name: string): void {
 
 function TitleScreen() {
   const [name, setName] = useState('');
+  const search = useLocation().search;
+  
+  const full = new URLSearchParams(search).get('lobbyFull');
+  const history = useHistory();
+  
+  useEffect(() => {
+    if (full != null) {
+      //TODO toast!
+      toast.error('Match is full');
+      const searchParams = new URLSearchParams(search);
+      searchParams.delete('lobbyFull');
+      history.push(searchParams.toString());
+    }
+  }, [full, history, search]);
 
   return (
     <div>
