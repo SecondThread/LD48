@@ -5,7 +5,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import reportWebVitals from './reportWebVitals';
 import TitleScreen from './titleScreen/TitleScreen';
-import RoomScreen from './roomScreen/RoomScreen';
+import RoomScreen from './roomScreen/RoomScreenEntry';
 import GameScreen from './gameScreen/GameScreen';
 import { Router, Route} from 'react-router';
 import { createBrowserHistory } from 'history';
