@@ -10,16 +10,19 @@ import GameScreen from './gameScreen/GameScreen';
 import { Router, Route} from 'react-router';
 import { createBrowserHistory } from 'history';
 import { ToastContainer } from 'react-toastify';
+import {Switch} from 'react-router-dom';
 
 ReactDOM.render(
-  <React.StrictMode>
+  <div>
     <Router history={createBrowserHistory({})}>
-      <Route exact path="/" component={TitleScreen}/>
-      <Route path = "/room/:roomId" component = {RoomScreen} />
-      <Route path = "/game/:gameId" component = {GameScreen} />
+      <Switch>
+        <Route exact path = "/" component={TitleScreen}/>
+        <Route path = "/room/:roomId" component = {RoomScreen} />
+        <Route path = "/game/:gameId" component = {GameScreen} />
+      </Switch>
     </Router>
     <ToastContainer/>
-  </React.StrictMode>,
+  </div>,
   document.getElementById('root')
 );
 
