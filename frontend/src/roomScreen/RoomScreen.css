@@ -1,0 +1,26 @@
+.centerText {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.tableWidth {
+    width: 300px;
+}
+.smallWidth {
+    width: 90px;
+}
+.centerContent {
+    justify-content: center;
+}
+.automargin {
+    margin: auto;
+}
+
+.normalMargin {
+    margin: 10px;
+}
+
+.centerText {
+    text-align: center;
+}
