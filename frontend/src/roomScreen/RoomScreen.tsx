@@ -29,8 +29,7 @@ function RoomScreen() {
     //TODO: return screen asking them to type in their nickname
     return (
       <div>
-          
-
+          Hello, please type username
       </div>
     );
   }
