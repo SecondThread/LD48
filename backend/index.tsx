@@ -5,7 +5,7 @@ import express from 'express';
 const app = express();
 const PORT = 3001;
 
-app.get('/', (req, res) => {
+app.get('/api/test', (req, res) => {
   res.send('Hello world');
 });
 
