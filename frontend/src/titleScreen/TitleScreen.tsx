@@ -18,7 +18,7 @@ function onClickJoinPublicRoom(name: string, historyPush: (goTo: string) => void
     console.log(res);
     res.json().then(data => {
       historyPush('/room/'+data+'?nickname='+name);
-    })
+    }).catch((err) => res.text().then(x =>console.log(x)));
   });
 }
 
@@ -28,7 +28,7 @@ function onClickCreatePrivateRoom(name: string, historyPush: (goTo: string) => v
     console.log(res);
     res.json().then(data => {
       historyPush('/room/'+data+'?nickname='+name);
-    })
+    }).catch((err) => res.text().then(x =>console.log(x)));
   });
 }
 

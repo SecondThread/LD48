@@ -9,12 +9,14 @@ async function joinPublicRoom(req: Request<any>, res: Response<any>): Promise<vo
         const first =validRooms==null? null: validRooms.find((x: any) => x.players.length<5);
         if (first==null ) {
             const now=new Date().getTime();
+            console.log('Creating public room.');
             const created = await Room.create({
                 isPrivate: false, 
                 players: [],
                 startTime: now+30*1000,
                 endTime: now+30*1000+60*1000,
             });
+            console.log('Created public room.');
             const createdId = created._id;
             res.status(200).json(createdId);
             return;
