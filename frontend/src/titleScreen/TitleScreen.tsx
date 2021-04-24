@@ -1,19 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import {useLocation, useHistory} from 'react-router-dom';
+import {useLocation, useHistory } from 'react-router-dom';
 import {toast} from 'react-toastify';
 import './TitleScreen.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-function onClickJoinPublicRoom(name: string): void {
-  //TODO: get public room
-  console.log('Getting public room for '+name);
+const requestOptions = {
+  method: 'POST',
+  headers: {
+    'Access-Control-Allow-Origin': '*',
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Credentials': 'true',
+  }
+};
 
+function onClickJoinPublicRoom(name: string, historyPush: (goTo: string) => void): void {
+  console.log('Getting public room for '+name);
+  fetch('api/joinPublicRoom', requestOptions).then(res => res.json().then(data => {
+    historyPush('/room/'+data+'?nickname='+name);
+  }));
 }
 
-function onClickCreatePrivateRoom(name: string): void {
-  //TODO: get private room
+function onClickCreatePrivateRoom(name: string, historyPush: (goTo: string) => void): void {
   console.log('Getting private room for '+name);
-
+  fetch('api/createPrivateRoom', requestOptions).then(res => res.json().then(data => {
+    historyPush('/room/'+data+'?nickname='+name);
+  }));
 }
 
 function TitleScreen() {
@@ -49,10 +60,14 @@ function TitleScreen() {
           </div>
         </div>
         <div className="row justify-content-center">
-            <button type="button" className="normalMargin btn btn-dark" onClick={() => onClickJoinPublicRoom(name)}>
+            <button type="button" className="normalMargin btn btn-dark" 
+              onClick={() => onClickJoinPublicRoom(name, x=>history.push(x))}
+            >
               Join Public Room
             </button>
-            <button type="button" className="normalMargin btn btn-dark" onClick={() => onClickCreatePrivateRoom(name)}>
+            <button type="button" className="normalMargin btn btn-dark" 
+              onClick={() => onClickCreatePrivateRoom(name, x=>history.push(x))}
+            >
               Create Private Room
             </button>
         </div>

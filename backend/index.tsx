@@ -27,7 +27,7 @@ mongoose.connect('mongodb://localhost:27017/under', options)
 	.catch((e) => console.error('Could not connect to DB '+e));
 
 app.post('/api/createPrivateRoom', createPrivateRoom);
-app.post('/api/joinPublicRoom', createPrivateRoom);
+app.post('/api/joinPublicRoom', joinPublicRoom);
 app.post('/api/getRoomInfo', getRoomInfo);
 
 app.listen(PORT, () => {
