@@ -17,7 +17,7 @@ ReactDOM.render(
     <Router history={createBrowserHistory({})}>
       <Switch>
         <Route exact path = "/" component={TitleScreen}/>
-        <Route path = "/asdf" component = {TitleScreen} />
+        <Route exact path = "/asdf" component = {TitleScreen} />
         <Route path = "/room/:roomId" component = {RoomScreen} />
         <Route path = "/game/:gameId" component = {GameScreen} />
       </Switch>
