@@ -1,0 +1,20 @@
+.centeredText {
+    text-align: center;
+}
+
+.nicknameField {
+    width: 150dp;
+}
+
+.normalMargin {
+    margin: 20px;
+}
+
+.centerContent {
+    justify-content: center;
+}
+
+.headingWithLotsOfSpaceBelow {
+    margin-top: 30px;
+    margin-bottom: 200px;
+}

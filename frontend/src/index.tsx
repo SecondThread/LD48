@@ -1,12 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import reportWebVitals from './reportWebVitals';
+import TitleScreen from './titleScreen/TitleScreen';
+import RoomScreen from './roomScreen/RoomScreen';
+import GameScreen from './gameScreen/GameScreen';
+import {Router, Route } from 'react-router';
+import { createBrowserHistory } from 'history';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Router history={createBrowserHistory({})}>
+      <Route exact path="/" component={TitleScreen}/>
+      <Route path = "/room/:roomId" component = {RoomScreen} />
+      <Route path = "/game/:gameId" component = {GameScreen} />
+    </Router>
   </React.StrictMode>,
   document.getElementById('root')
 );
