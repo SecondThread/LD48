@@ -14,16 +14,22 @@ const requestOptions = {
 
 function onClickJoinPublicRoom(name: string, historyPush: (goTo: string) => void): void {
   console.log('Getting public room for '+name);
-  fetch('api/joinPublicRoom', requestOptions).then(res => res.json().then(data => {
-    historyPush('/room/'+data+'?nickname='+name);
-  }));
+  fetch('api/joinPublicRoom', requestOptions).then(res => {
+    console.log(res);
+    res.json().then(data => {
+      historyPush('/room/'+data+'?nickname='+name);
+    })
+  });
 }
 
 function onClickCreatePrivateRoom(name: string, historyPush: (goTo: string) => void): void {
   console.log('Getting private room for '+name);
-  fetch('api/createPrivateRoom', requestOptions).then(res => res.json().then(data => {
-    historyPush('/room/'+data+'?nickname='+name);
-  }));
+  fetch('api/createPrivateRoom', requestOptions).then(res => {
+    console.log(res);
+    res.json().then(data => {
+      historyPush('/room/'+data+'?nickname='+name);
+    })
+  });
 }
 
 function TitleScreen() {
