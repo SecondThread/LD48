@@ -5,6 +5,7 @@ import Room from '../models/Room';
 
 async function joinPublicRoom(req: Request<any>, res: Response<any>): Promise<void> {
     try {
+        console.log('joining public room')
         const validRooms: any = await Room.find({isPrivate: false});
         const first =validRooms==null? null: validRooms.find((x: any) => x.players.length<5);
         const SECOND_UNTIL_START=3;
@@ -19,16 +20,16 @@ async function joinPublicRoom(req: Request<any>, res: Response<any>): Promise<vo
             });
             console.log('Created public room.');
             const createdId = created._id;
-            res.status(200).json(createdId);
+            res.status(200).json(createdId).send();
             return;
         }
         const id=first._id;
-        res.status(200).json(id);
+        res.status(200).json(id).send();
         return;
     }
     catch(e) {
         console.log(e);
-        res.status(500);
+        res.status(500).send();
     }
 }
 

@@ -3,6 +3,7 @@ import Room from '../models/Room';
 
 async function createPrivateRoom(req: Request<any>, res: Response<any>): Promise<void> {
     try {
+        console.log('Creating private room');
         const now=new Date().getTime();
         const created = await Room.create({
             isPrivate: true, 
@@ -16,7 +17,7 @@ async function createPrivateRoom(req: Request<any>, res: Response<any>): Promise
     }
     catch(e) {
         console.log(e);
-        res.status(500);
+        res.status(500).send();
     }
 }
 

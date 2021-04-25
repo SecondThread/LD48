@@ -1,16 +1,20 @@
 import CollisionSeg from "./CollisionSeg";
-import drawImage, { drawCircle, getCameraPosition, ImageName, setCameraPosition } from "./drawing/ImageLoader";
+import drawImage, { drawCircle, getCameraPosition, ImageName, setCameraPosition, setCameraWidth} from "./drawing/ImageLoader";
 import GameObject from './GameObject';
 import Vec, { lerpV } from './geo/Vec';
 import Target from "./Target";
 
-const SHARK_WIDTH=.5;
-const SHARK_DRAW_Y_OFFSET=0;
+const FROG_WIDTH=.5;
+const FROG_DRAW_Y_OFFSET=0;
 const drag=0.99;
 const REACH_DIST=6;
 
-class Shark extends GameObject {
+const SHARK_WIDTH=2.4;
+const SHARK_DRAW_Y_OFFSET=-.6;
+
+class Frog extends GameObject {
     position: Vec;
+    drawPosition: Vec;
     angle: number;
     velocity: Vec;
     facingRight: boolean = true;
@@ -18,16 +22,32 @@ class Shark extends GameObject {
     updatesUntilSpring: number = 0;
     onTarget: boolean = false;
     isMe: boolean;
+    _id: String;
+    lastTimeUpdated: number;
+    isShark: boolean;
 
-    constructor(position: Vec, velocity: Vec, isMe: boolean) {
+    constructor(position: Vec, velocity: Vec, isMe: boolean, _id: String, lastTimeUpdated: number, isShark: boolean) {
         super();
         this.position=position;
+        this.drawPosition=position;
         this.velocity=velocity;
         this.angle=0;
         this.isMe=isMe;
+        this._id = _id;
+        this.lastTimeUpdated=lastTimeUpdated;
+        this.isShark = isShark;
+        this.drawImage=isShark?"SHARK_STRAIGHT":"FROG2";
     }
 
     update(collisionSegs: CollisionSeg[], targets: Target[]): void {
+        if (this.isMe) {
+            setCameraWidth(this.isShark?60:40);
+        }
+        if (this.isShark) {
+            this.onTarget=false;
+        }
+
+        this.drawPosition=lerpV(this.drawPosition, this.position, 0.1);
 
         if (this.isMe) {
             let nearTarget=targets.filter(x => x.position.sub(this.position).mag()<REACH_DIST && x.isWater !== this.onTarget);
@@ -38,6 +58,16 @@ class Shark extends GameObject {
             else {
                 nearTarget.map(x => x.isNear=false);
                 farTargets.map(x => x.isNear=true);
+            }
+        }
+        
+        
+        if (!this.isMe) {
+            this.onTarget = this.position.y > 10;
+            if (this.onTarget) {
+                if (Math.abs(this.position.sub(this.drawPosition).x)>1) {
+                    this.facingRight=this.position.x>this.drawPosition.x;
+                }
             }
         }
         
@@ -59,11 +89,28 @@ class Shark extends GameObject {
             }
             this.velocity=this.velocity.scale(drag);
 
-            let newTargetAngle = this.velocity;//this.velocity.add(new Vec(this.facingRight?0.2:-0.2, 0)).unit();
-            const curAngleVec=new Vec(1, 0).rotate(this.angle);
+            let newTargetAngle = null;
+            let curAngleVec = null;
+            if (this.isShark) {
+                newTargetAngle = this.velocity.add(new Vec(this.facingRight?0.2:-0.2, 0)).unit();
+                curAngleVec=new Vec(1, 0).rotate(this.angle);
+            }
+            else {
+                newTargetAngle = this.velocity;
+                curAngleVec=new Vec(1, 0).rotate(this.angle);
+            }
             const targetAngleVec=curAngleVec.add(newTargetAngle);
-            this.drawImage=this.updatesUntilSpring>0?"FROG2":"FROG";
-            this.updatesUntilSpring--;
+            
+
+            if (!this.isShark) {
+                if (this.isMe) {
+                    this.drawImage=this.updatesUntilSpring>0?"FROG2":"FROG";
+                    this.updatesUntilSpring--;
+                }
+                else {
+                    this.drawImage=this.velocity.mag()>0.1?"FROG2":"FROG";
+                }
+            }
 
             this.angle=targetAngleVec.angle();
             this.facingRight=Math.cos(this.angle)>=0;
@@ -82,9 +129,11 @@ class Shark extends GameObject {
 
 
     render(): void {
-        drawCircle(this.position, SHARK_WIDTH);
+        drawCircle(this.position, FROG_WIDTH);
         const drawAngle=this.facingRight?this.angle-0.6:Math.PI+this.angle+0.6;
-        drawImage(this.drawImage, this.position.add(new Vec(0, SHARK_DRAW_Y_OFFSET)), 5, 5, drawAngle, 1, !this.facingRight);
+        const myDrawPosition=this.isMe?this.position:this.drawPosition;
+        const myOffset=this.isShark?SHARK_DRAW_Y_OFFSET:FROG_DRAW_Y_OFFSET;
+        drawImage(this.drawImage, myDrawPosition.add(new Vec(0, myOffset)), 5, 5, drawAngle, 1, !this.facingRight);
     }
 
     processClick(mouseClick: Vec, targets: Target[]): void {
@@ -92,6 +141,14 @@ class Shark extends GameObject {
             return;
         }
 
+        if (this.isShark) {
+            const dirToMouse = mouseClick.sub(this.position).unit();
+            if (Math.abs(dirToMouse.y)>0.7) {
+                return;
+            }
+            this.velocity=this.velocity.add(dirToMouse.scale(0.4));
+            return;
+        }
         //try to put it to a target
         for (const target of targets.filter(x=> x.isNear)) {
             if (target.position.sub(mouseClick).mag()<4) {
@@ -126,7 +183,8 @@ class Shark extends GameObject {
 
     intersectCollisionSeg(collisionSegs: CollisionSeg[], oldPosition: Vec): boolean {
         for (const seg of collisionSegs) {
-            if (seg.intersectCircle(this.position, SHARK_WIDTH)) {
+            const myWidth=this.isShark?SHARK_WIDTH:FROG_WIDTH;
+            if (seg.intersectCircle(this.position, myWidth)) {
                 const closestPoint = seg.closestTo(oldPosition);
                 const legalVelocity=closestPoint.sub(oldPosition).rot90().unit();
                 this.velocity=legalVelocity.scale(legalVelocity.dot(this.velocity));
@@ -138,4 +196,4 @@ class Shark extends GameObject {
     
 }
 
-export default Shark;
+export default Frog;

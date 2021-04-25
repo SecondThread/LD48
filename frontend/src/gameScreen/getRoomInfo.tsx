@@ -11,13 +11,14 @@ function getRoomInfo(roomId: String, onRoomLoads: (room: Room) => void) {
         'Access-Control-Allow-Credentials': 'true',
       },
       body: JSON.stringify({roomId}),
-    }).then(res => res.json().then(data => {
+    }).then(res => res.text().then(data => {
       if (data==null) {
         console.log("Error!");
         console.log(res);
         return;
       }
-      const room: Room = data;
+      const json=JSON.parse(data)
+      const room: Room = json;
       console.log('Leading room...')
       onRoomLoads(room);
     }).catch(e => console.log(e)));

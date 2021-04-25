@@ -59,8 +59,12 @@ function setCTX(context: CanvasRenderingContext2D) {
     ctx=context;
 }
 
-const CAMERA_WIDTH=40;
+let CAMERA_WIDTH=40;
 let cameraPosition = new Vec(0, -10);
+
+function setCameraWidth(cameraWidth: number) {
+    CAMERA_WIDTH=cameraWidth;
+}
 
 function setCameraPosition(newCameraPos: Vec): void {
     cameraPosition=new Vec(newCameraPos.x, newCameraPos.y);
@@ -161,5 +165,5 @@ function drawSeg(from: Vec, to: Vec) {
 }
 
 export default drawImage;
-export {setCTX, getCameraPosition, setCameraPosition, screenPointToWorldPoint, drawSeg, drawCircle};
+export {setCTX, getCameraPosition, setCameraPosition, screenPointToWorldPoint, drawSeg, drawCircle, setCameraWidth};
 export type {ImageName};

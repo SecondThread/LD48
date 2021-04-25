@@ -9,6 +9,7 @@ import Target from './Target';
 import CollisionSeg from './CollisionSeg';
 import Frog from './Frog';
 import getRoomInfo from './getRoomInfo';
+import { getPositionOfLineAndCharacter } from 'typescript';
 
 type Props = {
   roomId: string,
@@ -61,7 +62,7 @@ const targets: Array<Target> = [
   new Target(new Vec(93, 6), true),
 ]
 
-const myFrog=new Frog(new Vec(10, -10), new Vec(0, 0), true);
+const myFrog=new Frog(new Vec(10, -10), new Vec(0, 0), true, "", new Date().getTime());
 let otherPlayers: Array<Frog> = [];
 
 const gameObjects: Array<GameObject> = [
@@ -100,9 +101,10 @@ function sendInfoToServer(roomId: string, userId: string): void {
       xVel: myFrog.velocity.x,
       yVel: myFrog.velocity.y,
     }),
-  }).then(res => res.json().then(data => {
-    console.log('Got response: ');
-    console.log(data);
+  }).then(res => res.text().then(data => {
+    console.log('Got response: '+data);
+    const json=JSON.parse(data);
+    console.log(json);
   }).catch((e) => console.log(e)));
 }
 
@@ -127,7 +129,7 @@ function handleClick(x: number, y: number): void {
 
 
 let resendInfoToServerCounter=0;
-let getInfoFromServerCounter=59;
+let getInfoFromServerCounter=0;
 
 function GameScreen(props: Props) {
   const canvas = useRef(null);
@@ -175,18 +177,29 @@ function GameScreen(props: Props) {
     }
     
     resendInfoToServerCounter++;
-    if (resendInfoToServerCounter === 60) {
+    if (resendInfoToServerCounter === 20) {
       resendInfoToServerCounter=0;
       sendInfoToServer(props.roomId, props.playerId);
     }
     getInfoFromServerCounter++;
-    if (getInfoFromServerCounter === 60) {
+    if (getInfoFromServerCounter === 20) {
       getInfoFromServerCounter=0;
       getRoomInfo(props.roomId, room => {
-        otherPlayers = room.players.filter(x => x._id !== props.playerId).map(player => 
-          new Frog(new Vec(player.x, player.y), new Vec(player.xVel, player.yVel), false));
-          console.log('Got other players: ');
-          console.log(otherPlayers);
+        room.players.filter(x => x._id !== props.playerId)
+          .map(player =>  {
+            const matching=otherPlayers.find(x => x._id===player._id);
+            if (matching==null) {
+              otherPlayers.push(new Frog(new Vec(player.x, player.y), new Vec(player.xVel, player.yVel), false, player._id, player.timeUpdated));
+            }
+            else {
+              if (matching.lastTimeUpdated < player.timeUpdated) {
+                matching.lastTimeUpdated = player.timeUpdated;
+                matching.position=new Vec(player.x, player.y);
+                matching.velocity=new Vec(player.xVel, player.yVel);
+              }
+            }
+            
+          });
       });
     }
 

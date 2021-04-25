@@ -6,12 +6,12 @@ function getRoomInfo(req: Request<any>, res: Response<any>): void {
         console.log('Getting room info.');
         const {roomId} = req.body;
         Room.findById(roomId, (err: Error, doc: IRoom) => {
-            return res.status(200).json(doc);
+            res.status(200).json(doc).send();
         });
     }
     catch(e) {
         console.log(e);
-        res.status(500);
+        res.status(500).send();
     }
 }
 
