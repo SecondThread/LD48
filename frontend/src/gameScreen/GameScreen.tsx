@@ -14,6 +14,28 @@ type Props = {
   playerId: string
 }
 
+const collisionSegs: Array<CollisionSeg> = [
+  //collision segs for grass islands
+  new CollisionSeg(new Vec(-80, 10), new Vec(-60, 10), 2),
+  new CollisionSeg(new Vec(-45, 10), new Vec(-25, 10), 3),
+  new CollisionSeg(new Vec(-10, 10), new Vec(10, 10), 2),
+  new CollisionSeg(new Vec(24, 10), new Vec(57, 10), 2),
+  new CollisionSeg(new Vec(75, 10), new Vec(85, 10), 2),
+
+  //collision segs for rock islands
+  new CollisionSeg(new Vec(75, -18), new Vec(83, -19), 2),
+  new CollisionSeg(new Vec(24, -7), new Vec(35, -8), 2),
+  new CollisionSeg(new Vec(-2, -33.5), new Vec(20, -34), 1.5),
+  new CollisionSeg(new Vec(-53, -28.5), new Vec(-45.5, -27.8), 2),
+  new CollisionSeg(new Vec(-76, -18), new Vec(-86, -17), 2),
+
+
+  //Collision segs for the boarder walls
+  new CollisionSeg(new Vec(-100, -50), new Vec(100, -50), 3),
+  new CollisionSeg(new Vec(-100, 50), new Vec(-100, -50), 1.5),
+  new CollisionSeg(new Vec(100, 50), new Vec(100, -50), 1.5),
+];
+
 const gameObjects: Array<GameObject> = [
   //islands
   new Island("ISLAND2", new Vec(-70, 9.5), 30, 40, true),
@@ -51,26 +73,6 @@ const gameObjects: Array<GameObject> = [
   new Target(new Vec(64, 6)),
   new Target(new Vec(93, 6)),
 
-  //collision segs for grass islands
-  new CollisionSeg(new Vec(-80, 10), new Vec(-60, 10), 2),
-  new CollisionSeg(new Vec(-45, 10), new Vec(-25, 10), 3),
-  new CollisionSeg(new Vec(-10, 10), new Vec(10, 10), 2),
-  new CollisionSeg(new Vec(24, 10), new Vec(57, 10), 2),
-  new CollisionSeg(new Vec(75, 10), new Vec(85, 10), 2),
-
-  //collision segs for rock islands
-  new CollisionSeg(new Vec(75, -18), new Vec(83, -19), 2),
-  new CollisionSeg(new Vec(24, -7), new Vec(35, -8), 2),
-  new CollisionSeg(new Vec(-2, -33.5), new Vec(20, -34), 1.5),
-  new CollisionSeg(new Vec(-53, -28.5), new Vec(-45.5, -27.8), 2),
-  new CollisionSeg(new Vec(-76, -18), new Vec(-86, -17), 2),
-
-
-  //Collision segs for the boarder walls
-  new CollisionSeg(new Vec(-100, -50), new Vec(100, -50), 3),
-  new CollisionSeg(new Vec(-100, 50), new Vec(-100, -50), 1.5),
-  new CollisionSeg(new Vec(100, 50), new Vec(100, -50), 1.5),
-
   new Shark(new Vec(10, -10)),
 ];
 
@@ -84,9 +86,8 @@ function _resizeCanvas(canvas: HTMLCanvasElement): void {
 }
 
 function handleClick(x: number, y: number): void {
-  console.log(x, y);
   const worldPoint=screenPointToWorldPoint(new Vec(x, y));
-  console.log(worldPoint);
+  console.log("Clicked "+worldPoint.x+" "+worldPoint.y);
   
   //TODO: use this for movement or something
   for (const gameObject of gameObjects) {
@@ -120,7 +121,7 @@ function GameScreen(props: Props) {
     drawImage("BOARDER", new Vec(-50, 0), 100, 100, 0, 1, false);
 
     for (const gameObject of gameObjects) {
-      gameObject.update();
+      gameObject.update(collisionSegs);
     }
 
     for (const gameObject of gameObjects) {
