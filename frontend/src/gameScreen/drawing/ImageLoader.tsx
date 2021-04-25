@@ -15,7 +15,8 @@ type ImageName =
     "SHARK_STRAIGHT" | 
     "SHARK_UP" | 
     "SKY" | 
-    "TREASURE";
+    "TREASURE"|
+    "TARGET";
 let ctx: CanvasRenderingContext2D | null = null;
 
 const images = {
@@ -34,6 +35,7 @@ const images = {
     SHARK_UP: new Image(),
     SKY: new Image(),
     TREASURE: new Image(),
+    TARGET: new Image(),
 };
 
 images.COIN.src="/Coin.png";
@@ -41,7 +43,7 @@ images.BOARDER.src="/Boarder.png";
 images.FROG.src="/Frog.png";
 images.FROG2.src="/Frog2.png";
 images.ISLAND1.src="/Island1.png";
-images.ISLAND2.src="/Shark.png";
+images.ISLAND2.src="/Island2.png";
 images.OCEAN.src="/OceanBackground.png";
 images.ROCK_ISLAND1.src="/RockIsland1.png";
 images.ROCK_ISLAND2.src="/RockIsland2.png";
@@ -51,6 +53,7 @@ images.SHARK_STRAIGHT.src="/SharkStraight.png";
 images.SHARK_UP.src="/SharkUp.png";
 images.SKY.src="/Sky.png";
 images.TREASURE.src="/Treasure.png";
+images.TARGET.src="/Target.png";
 
 function setCTX(context: CanvasRenderingContext2D) {
     ctx=context;
@@ -86,7 +89,25 @@ function worldPointToScreenPoint(worldX: number, worldY: number): Vec {
     return new Vec(x + screenWidth/2, y+screenWidth/4);
 }
 
-function drawImage(imageName: ImageName, x: number, y: number, w: number, h:number, angle: number=0, alpha: number=1, flippedHorizontally: boolean = false): void {
+function screenDimToWorldDim(screenDimention: number): number {
+    if (ctx==null) return 1;
+    const screenWidth=ctx.canvas.width;
+    return screenDimention*CAMERA_WIDTH/screenWidth;
+}
+
+function screenPointToWorldPoint(screenPosition: Vec): Vec {
+    const screenWidth = ctx?.canvas.width ?? 0;
+    const zeroized=screenPosition.sub(new Vec(screenWidth/2, screenWidth/4));
+    let x=screenDimToWorldDim(zeroized.x);
+    let y=screenDimToWorldDim(zeroized.y);
+    x=x+cameraPosition.x;
+    y=cameraPosition.y-y;
+    return new Vec(x, y);
+}
+
+function drawImage(imageName: ImageName, position: Vec, w: number, h:number, angle: number=0, alpha: number=1, flippedHorizontally: boolean = false): void {
+    const x=position.x;
+    const y=position.y;
     const toDraw: HTMLImageElement=getImage(imageName);
     
     if (toDraw!=null && ctx!=null && toDraw!.complete) {
@@ -118,5 +139,5 @@ function getImage(imageName: ImageName) {
 }
 
 export default drawImage;
-export {setCTX, getCameraPosition, setCameraPosition};
+export {setCTX, getCameraPosition, setCameraPosition, screenPointToWorldPoint};
 export type {ImageName};
