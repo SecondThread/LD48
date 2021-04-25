@@ -16,8 +16,6 @@ function getRoomInfo(roomId: String, onRoomLoads: (room: Room) => void) {
           console.log(res);
           return;
         }
-        console.log("Just got info about room");
-        console.log(data);
         const room: Room = data;
         onRoomLoads(room);
       }));

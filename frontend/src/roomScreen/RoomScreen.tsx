@@ -5,6 +5,7 @@ import { useInterval } from '../gameScreen/useInterval';
 import type {Player} from '../gameScreen/Player';
 import './RoomScreen.css';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
+import GameScreen from '../gameScreen/GameScreen';
 
 type Props= {
     roomId: string,
@@ -44,6 +45,11 @@ function RoomScreen(props: Props) {
       setStarted(started);
       setSecondUntilStart(Math.round((match.startTime-currentTime)/1000));
     }), 1000);
+
+    console.log('started: '+started)
+    if (started && myId!=null) {
+        return <GameScreen roomId={props.roomId} playerId={myId!}/>
+    }
 
     return <div className = "centerContent">
         <h1 className="centerText">Lobby</h1>
