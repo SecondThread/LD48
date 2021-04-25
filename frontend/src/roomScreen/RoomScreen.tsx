@@ -46,7 +46,6 @@ function RoomScreen(props: Props) {
       setSecondUntilStart(Math.round((match.startTime-currentTime)/1000));
     }), 1000);
 
-    console.log('started: '+started)
     if (started && myId!=null) {
         return <GameScreen roomId={props.roomId} playerId={myId!}/>
     }
