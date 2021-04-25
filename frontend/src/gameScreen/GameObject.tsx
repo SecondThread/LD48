@@ -1,3 +1,4 @@
+import Vec from "./geo/Vec";
 
 
 class GameObject {
@@ -5,7 +6,11 @@ class GameObject {
     update(): void {
 
     }
+
     render(): void {
+
+    }
+    processClick(mouseClick: Vec) {
 
     }
 

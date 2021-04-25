@@ -59,8 +59,8 @@ function setCTX(context: CanvasRenderingContext2D) {
     ctx=context;
 }
 
-const CAMERA_WIDTH=200;
-let cameraPosition = new Vec(0, 0);
+const CAMERA_WIDTH=50;
+let cameraPosition = new Vec(0, -10);
 
 function setCameraPosition(newCameraPos: Vec): void {
     cameraPosition=newCameraPos;
@@ -138,6 +138,25 @@ function getImage(imageName: ImageName) {
     return images[imageName];
 }
 
+function drawCircle(center: Vec, r: number) {
+    if (ctx==null) return;
+    const centerScreen=worldPointToScreenPoint(center.x, center.y);
+    const screenR=worldDimToScreenDim(r);
+    ctx!.beginPath();
+    ctx!.ellipse(centerScreen.x, centerScreen.y, screenR, screenR, 0, 0, 2*Math.PI);
+    ctx!.stroke();
+}
+
+function drawSeg(from: Vec, to: Vec) {
+    if (ctx==null) return;
+    const fromScreen=worldPointToScreenPoint(from.x, from.y);
+    const toScreen=worldPointToScreenPoint(to.x, to.y);
+    ctx?.beginPath();
+    ctx?.moveTo(fromScreen.x, fromScreen.y);
+    ctx?.lineTo(toScreen.x, toScreen.y);
+    ctx?.stroke();
+}
+
 export default drawImage;
-export {setCTX, getCameraPosition, setCameraPosition, screenPointToWorldPoint};
+export {setCTX, getCameraPosition, setCameraPosition, screenPointToWorldPoint, drawSeg, drawCircle};
 export type {ImageName};
