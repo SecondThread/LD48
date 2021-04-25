@@ -8,6 +8,7 @@ import { useInterval } from './useInterval';
 import Target from './Target';
 import CollisionSeg from './CollisionSeg';
 import Shark from './Shark';
+import Frog from './Frog';
 
 type Props = {
   roomId: string,
@@ -36,6 +37,30 @@ const collisionSegs: Array<CollisionSeg> = [
   new CollisionSeg(new Vec(100, 50), new Vec(100, -50), 1.5),
 ];
 
+const targets: Array<Target> = [
+  //targets
+  new Target(new Vec(-77, 12.7)),
+  new Target(new Vec(-63, 13.3)),
+  new Target(new Vec(-45, 12.3)),
+  new Target(new Vec(-35, 13)),
+  new Target(new Vec(-26, 13)),
+  new Target(new Vec(-8, 12)),
+  new Target(new Vec(8, 12)),
+  new Target(new Vec(25, 12)),
+  new Target(new Vec(55, 12)),
+  new Target(new Vec(75, 12.4)),
+  new Target(new Vec(85, 12)),
+
+  //Water targets
+  new Target(new Vec(-87, 6), true),
+  new Target(new Vec(-55, 6), true),
+  new Target(new Vec(-55, 6), true),
+  new Target(new Vec(-16, 6), true),
+  new Target(new Vec(18, 6), true),
+  new Target(new Vec(64, 6), true),
+  new Target(new Vec(93, 6), true),
+]
+
 const gameObjects: Array<GameObject> = [
   //islands
   new Island("ISLAND2", new Vec(-70, 9.5), 30, 40, true),
@@ -51,29 +76,8 @@ const gameObjects: Array<GameObject> = [
   new Island("ROCK_ISLAND2", new Vec(30, -10), 20, 30, true),
   new Island("ROCK_ISLAND1", new Vec(10, -36), 40, 30, true),
 
-  //targets
-  new Target(new Vec(-77, 12.7)),
-  new Target(new Vec(-63, 13.3)),
-  new Target(new Vec(-45, 12.3)),
-  new Target(new Vec(-35, 13)),
-  new Target(new Vec(-26, 13)),
-  new Target(new Vec(-8, 12)),
-  new Target(new Vec(8, 12)),
-  new Target(new Vec(25, 12)),
-  new Target(new Vec(55, 12)),
-  new Target(new Vec(75, 12.4)),
-  new Target(new Vec(85, 12)),
-
-  //Water targets
-  new Target(new Vec(-87, 6)),
-  new Target(new Vec(-55, 6)),
-  new Target(new Vec(-55, 6)),
-  new Target(new Vec(-16, 6)),
-  new Target(new Vec(18, 6)),
-  new Target(new Vec(64, 6)),
-  new Target(new Vec(93, 6)),
-
-  new Shark(new Vec(10, -10)),
+  //new Shark(new Vec(10, -10)),
+  new Frog(new Vec(10, -10)),
 ];
 
 function _resizeCanvas(canvas: HTMLCanvasElement): void {
@@ -91,7 +95,7 @@ function handleClick(x: number, y: number): void {
   
   //TODO: use this for movement or something
   for (const gameObject of gameObjects) {
-    gameObject.processClick(worldPoint);
+    gameObject.processClick(worldPoint, targets);
   }
 }
 
@@ -121,10 +125,16 @@ function GameScreen(props: Props) {
     drawImage("BOARDER", new Vec(-50, 0), 100, 100, 0, 1, false);
 
     for (const gameObject of gameObjects) {
-      gameObject.update(collisionSegs);
+      gameObject.update(collisionSegs, targets);
+    }
+    for (const gameObject of targets) {
+      gameObject.update(collisionSegs, targets);
     }
 
     for (const gameObject of gameObjects) {
+      gameObject.render();
+    }
+    for (const gameObject of targets) {
       gameObject.render();
     }
   }, 1000/60);

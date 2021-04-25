@@ -2,6 +2,7 @@ import CollisionSeg from "./CollisionSeg";
 import drawImage, { drawCircle, getCameraPosition, ImageName, setCameraPosition } from "./drawing/ImageLoader";
 import GameObject from './GameObject';
 import Vec, { lerpV } from './geo/Vec';
+import Target from "./Target";
 
 const SHARK_WIDTH=2.4;
 const SHARK_DRAW_Y_OFFSET=-.6;
@@ -19,7 +20,7 @@ class Shark extends GameObject {
         this.angle=0;
     }
 
-    update(collisionSegs: CollisionSeg[]): void {
+    update(collisionSegs: CollisionSeg[], targets: Target[]): void {
         const oldPosition=this.position;
         this.position=this.position.add(this.velocity);
         this.position.y=Math.min(this.position.y, 8);
@@ -52,7 +53,7 @@ class Shark extends GameObject {
         drawImage(this.drawImage, this.position.add(new Vec(0, SHARK_DRAW_Y_OFFSET)), 12, 12, drawAngle, 1, this.facingRight);
     }
 
-    processClick(mouseClick: Vec): void {
+    processClick(mouseClick: Vec, targets: Target[]): void {
         const dirToMouse = mouseClick.sub(this.position).unit();
         if (Math.abs(dirToMouse.y)>0.7) {
             return;
@@ -65,6 +66,7 @@ class Shark extends GameObject {
             if (seg.intersectCircle(this.position, SHARK_WIDTH)) {
                 const closestPoint = seg.closestTo(oldPosition);
                 const legalVelocity=closestPoint.sub(oldPosition).rot90().unit();
+
                 this.velocity=legalVelocity.scale(legalVelocity.dot(this.velocity));
                 return true;
             }

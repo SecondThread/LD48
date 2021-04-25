@@ -59,7 +59,7 @@ function setCTX(context: CanvasRenderingContext2D) {
     ctx=context;
 }
 
-const CAMERA_WIDTH=60;
+const CAMERA_WIDTH=40;
 let cameraPosition = new Vec(0, -10);
 
 function setCameraPosition(newCameraPos: Vec): void {
