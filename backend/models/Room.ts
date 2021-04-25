@@ -3,6 +3,7 @@ import mongoose, { Schema } from 'mongoose';
 type IPlayer = {
     _id?: String,
     timeUpdated: Number,
+    isShark: Boolean,
     username: String,
     x: Number,
     y: Number,
@@ -15,12 +16,16 @@ type IRoom = {
     isPrivate: Boolean,
     players: [IPlayer],
     save: any,
+    startTime: Number,
+    endTime: Number,
+    markModified: any;
 };
 
 const Room = mongoose.model('Room', new Schema({
     isPrivate: Boolean,
     players: [{        
         timeUpdated: Number,
+        isShark: Boolean,
         username: String,
         x: Number,
         y: Number,

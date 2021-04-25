@@ -1,6 +1,7 @@
 
 type Player = {
     _id: String,
+    isShark: boolean,
     timeUpdated: number,
     username: String,
     x: number;

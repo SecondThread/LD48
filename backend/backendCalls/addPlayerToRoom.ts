@@ -12,6 +12,7 @@ function addPlayerToRoom(req: Request<any>, res: Response<any>): void {
         }
         doc.players.push({
             timeUpdated: new Date().getTime(),
+            isShark: false,
             username: username,
             x: 0,
             y: 0,

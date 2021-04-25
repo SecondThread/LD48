@@ -8,9 +8,12 @@ const FROG_WIDTH=.5;
 const FROG_DRAW_Y_OFFSET=0;
 const drag=0.99;
 const REACH_DIST=6;
-
 const SHARK_WIDTH=2.4;
 const SHARK_DRAW_Y_OFFSET=-.6;
+const FROG_DRAW_HEIGHT=5;
+const SHARK_DRAW_HEIGHT=12;
+const FROG_ANGLE_OFFSET=0.6;
+const SHARK_ANGLE_OFFSET=-0.3;
 
 class Frog extends GameObject {
     position: Vec;
@@ -45,12 +48,13 @@ class Frog extends GameObject {
         }
         if (this.isShark) {
             this.onTarget=false;
+            this.drawImage="SHARK_STRAIGHT";
         }
 
         this.drawPosition=lerpV(this.drawPosition, this.position, 0.1);
 
         if (this.isMe) {
-            let nearTarget=targets.filter(x => x.position.sub(this.position).mag()<REACH_DIST && x.isWater !== this.onTarget);
+            let nearTarget=targets.filter(x => x.position.sub(this.position).mag()<REACH_DIST && x.isWater !== this.onTarget && !this.isShark   );
             let farTargets=targets.filter(x => nearTarget.indexOf(x)===-1);
             if (nearTarget.length===0) {
                 farTargets.map(x => x.isNear=false);
@@ -60,9 +64,8 @@ class Frog extends GameObject {
                 farTargets.map(x => x.isNear=true);
             }
         }
-        
-        
-        if (!this.isMe) {
+        else {
+            //if not me, guess whether I am on a target by position
             this.onTarget = this.position.y > 10;
             if (this.onTarget) {
                 if (Math.abs(this.position.sub(this.drawPosition).x)>1) {
@@ -72,7 +75,6 @@ class Frog extends GameObject {
         }
         
         
-
         if (this.onTarget) {
             this.velocity=new Vec(0, 0);
             this.angle=this.facingRight?Math.PI*.16:Math.PI-Math.PI*.16;
@@ -130,10 +132,13 @@ class Frog extends GameObject {
 
     render(): void {
         drawCircle(this.position, FROG_WIDTH);
-        const drawAngle=this.facingRight?this.angle-0.6:Math.PI+this.angle+0.6;
+        const angleOffset=this.isShark?SHARK_ANGLE_OFFSET:FROG_ANGLE_OFFSET;
+        const drawAngle=this.facingRight?this.angle-angleOffset:Math.PI+this.angle+angleOffset;
         const myDrawPosition=this.isMe?this.position:this.drawPosition;
         const myOffset=this.isShark?SHARK_DRAW_Y_OFFSET:FROG_DRAW_Y_OFFSET;
-        drawImage(this.drawImage, myDrawPosition.add(new Vec(0, myOffset)), 5, 5, drawAngle, 1, !this.facingRight);
+        const drawHeight=this.isShark?SHARK_DRAW_HEIGHT:FROG_DRAW_HEIGHT;
+        const drawFacingRight = this.isShark?this.facingRight:!this.facingRight;
+        drawImage(this.drawImage, myDrawPosition.add(new Vec(0, myOffset)), drawHeight, drawHeight, drawAngle, 1, drawFacingRight);
     }
 
     processClick(mouseClick: Vec, targets: Target[]): void {
