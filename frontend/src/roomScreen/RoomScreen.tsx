@@ -38,13 +38,17 @@ function RoomScreen(props: Props) {
 
     const linkToCopy='deeperunder.com/room/'+props.roomId;
 
-    useInterval(()=> getRoomInfo(props.roomId, match => {
-      setPlayers(match.players);
-      const currentTime=new Date().getTime();
-      const started=currentTime>match.startTime;
-      setStarted(started);
-      setSecondUntilStart(Math.round((match.startTime-currentTime)/1000));
-    }), 1000);
+    useInterval(()=> {
+      if (!started) {
+        getRoomInfo(props.roomId, match => {
+          setPlayers(match.players);
+          const currentTime=new Date().getTime();
+          const started=currentTime>match.startTime;
+          setStarted(started);
+          setSecondUntilStart(Math.round((match.startTime-currentTime)/1000));
+        })
+      }
+    }, 1000);
 
     if (started && myId!=null) {
         return <GameScreen roomId={props.roomId} playerId={myId!}/>

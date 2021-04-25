@@ -11,7 +11,11 @@ async function addPlayerToRoom(req: Request<any>, res: Response<any>): Promise<v
                 return;
             }
             doc.players.push({
-                username: username
+                username: username,
+                x: 0,
+                y: 0,
+                xVel: 0,
+                yVel: 0,
             });
             doc.save();
             res.status(200).send(doc.players[doc.players.length-1]._id);

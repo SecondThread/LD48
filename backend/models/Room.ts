@@ -3,6 +3,10 @@ import mongoose, { Schema } from 'mongoose';
 type IPlayer = {
     _id?: String,
     username: String,
+    x: Number,
+    y: Number,
+    xVel: Number,
+    yVel: Number,
 }
 
 type IRoom = {
@@ -16,6 +20,10 @@ const Room = mongoose.model('Room', new Schema({
     isPrivate: Boolean,
     players: [{        
         username: String,
+        x: Number,
+        y: Number,
+        xVel: Number,
+        yVel: Number,
     }],
     startTime: Number,
     endTime: Number,

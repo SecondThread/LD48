@@ -61,6 +61,8 @@ const targets: Array<Target> = [
   new Target(new Vec(93, 6), true),
 ]
 
+const myFrog=new Frog(new Vec(10, -10));
+
 const gameObjects: Array<GameObject> = [
   //islands
   new Island("ISLAND2", new Vec(-70, 9.5), 30, 40, true),
@@ -77,8 +79,33 @@ const gameObjects: Array<GameObject> = [
   new Island("ROCK_ISLAND1", new Vec(10, -36), 40, 30, true),
 
   //new Shark(new Vec(10, -10)),
-  new Frog(new Vec(10, -10)),
+  myFrog,
 ];
+
+
+
+function sendInfoToServer(roomId: string, userId: string): void {
+  console.log('Sending info to server '+roomId+" "+userId)
+  fetch('/api/updatePlayerLocation', {
+    method: 'POST',
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Credentials': 'true',
+    },
+    body: JSON.stringify({
+      userId,
+      roomId,
+      x: myFrog.position.x,
+      y: myFrog.position.y,
+      xVel: myFrog.velocity.x,
+      yVel: myFrog.velocity.y,
+    }),
+  }).then(res => res.json().then(data => {
+    console.log('Sent data to server');
+    console.log(data);
+  }).catch((e) => console.log(e)));
+}
 
 function _resizeCanvas(canvas: HTMLCanvasElement): void {
   const targetWidth=Math.min(canvas.clientWidth, canvas.clientHeight*2);
@@ -99,6 +126,8 @@ function handleClick(x: number, y: number): void {
   }
 }
 
+
+let resendInfoToServerCounter=0;
 
 function GameScreen(props: Props) {
   const canvas = useRef(null);
@@ -137,6 +166,12 @@ function GameScreen(props: Props) {
     for (const gameObject of targets) {
       gameObject.render();
     }
+    resendInfoToServerCounter++;
+    if (resendInfoToServerCounter == 60) {
+      resendInfoToServerCounter=0;
+      sendInfoToServer(props.roomId, props.playerId);
+    }
+
   }, 1000/60);
   return (
     <div className="App">

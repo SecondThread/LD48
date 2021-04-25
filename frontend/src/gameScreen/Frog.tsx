@@ -12,7 +12,7 @@ const REACH_DIST=6;
 class Shark extends GameObject {
     position: Vec;
     angle: number;
-    velocity: Vec = new Vec(-0.3, 0);
+    velocity: Vec = new Vec(0, 0);
     facingRight: boolean = true;
     drawImage: ImageName="FROG2";
     updatesUntilSpring: number = 0;

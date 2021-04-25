@@ -6,6 +6,7 @@ import joinPublicRoom from './backendCalls/joinPublicRoom';
 import getRoomInfo from './backendCalls/getRoomInfo';
 import mongoose from 'mongoose';
 import addPlayerToRoom from './backendCalls/addPlayerToRoom';
+import updatePlayerLocation from './backendCalls/updatePlayerLocation';
 
 const app = express();
 const PORT = 3001;
@@ -33,6 +34,7 @@ app.post('/api/createPrivateRoom', createPrivateRoom);
 app.post('/api/joinPublicRoom', joinPublicRoom);
 app.post('/api/getRoomInfo', getRoomInfo);
 app.post('/api/addPlayerToRoom', addPlayerToRoom);
+app.post('/api/updatePlayerLocation', updatePlayerLocation);
 
 app.listen(PORT, () => {
   console.log(`Express with Typescript! http://localhost:${PORT}`);
