@@ -2,6 +2,7 @@ import Vec from "../geo/Vec";
 
 type ImageName = 
     "COIN" | 
+    "BUBBLE" | 
     "BLOOD" | 
     "BOARDER" | 
     "FROG" | 
@@ -26,6 +27,7 @@ let ctx: CanvasRenderingContext2D | null = null;
 const images = {
     COIN: new Image(),
     BOARDER: new Image(),
+    BUBBLE: new Image(),
     BLOOD: new Image(),
     FROG: new Image(),
     FROG2: new Image(),
@@ -46,6 +48,7 @@ const images = {
 };
 
 images.COIN.src="/Coin.png";
+images.BUBBLE.src="/Bubble.png";
 images.BLOOD.src="/Blood1.png";
 images.BOARDER.src="/Boarder.png";
 images.FROG.src="/Frog.png";
@@ -61,8 +64,8 @@ images.SHARK_STRAIGHT.src="/SharkStraight.png";
 images.SHARK_UP.src="/SharkUp.png";
 images.SKY.src="/Sky.png";
 images.TREASURE.src="/Treasure.png";
-images.SHARK_WINS.src="/Target.png";
-images.FROGS_WIN.src="/Target.png";
+images.SHARK_WINS.src="/SharkWins.png";
+images.FROGS_WIN.src="/FrogsWin.png";
 images.TARGET.src="/Target.png";
 
 function setCTX(context: CanvasRenderingContext2D) {

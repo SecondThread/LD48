@@ -10,6 +10,7 @@ function getRoomInfo(req: Request<any>, res: Response<any>): void {
                 res.status(500).send();
                 return;
             }
+
             if (new Date().getTime()>doc.startTime && doc.players.find(x => x.isShark)==null) {
                 console.log("No shark yet, creating one now...");
                 const targetInd=Math.floor(Math.random()*doc.players.length);

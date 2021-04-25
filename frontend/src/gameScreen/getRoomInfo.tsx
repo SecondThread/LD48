@@ -2,7 +2,7 @@
 import type {Room} from './Room';
 
 function getRoomInfo(roomId: String, onRoomLoads: (room: Room) => void) {
-  console.log('Getting info for room '+roomId);
+  //console.log('Getting info for room '+roomId);
   fetch('/api/getRoomInfo', {
       method: 'POST',
       headers: {
@@ -19,7 +19,7 @@ function getRoomInfo(roomId: String, onRoomLoads: (room: Room) => void) {
       }
       const json=JSON.parse(data)
       const room: Room = json;
-      console.log('Leading room...')
+      //console.log('Leading room...')
       onRoomLoads(room);
     }).catch(e => console.log(e)));
 }

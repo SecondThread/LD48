@@ -1,9 +1,9 @@
 import {Request, Response} from 'express';
 import Room from '../models/Room';
 
-async function createPrivateRoom(req: Request<any>, res: Response<any>): Promise<void> {
+async function createRoom(req: Request<any>, res: Response<any>): Promise<void> {
     try {
-        console.log('Creating private room');
+        console.log('Resetting room');
         const now=new Date().getTime();
         const created = await Room.create({
             isPrivate: true, 
@@ -21,4 +21,4 @@ async function createPrivateRoom(req: Request<any>, res: Response<any>): Promise
     }
 }
 
-export default createPrivateRoom;
+export default createRoom;

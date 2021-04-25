@@ -5,6 +5,7 @@ import getRoomInfo from './backendCalls/getRoomInfo';
 import joinPublicRoom from './backendCalls/joinPublicRoom';
 import updatePlayerLocation from './backendCalls/updatePlayerLocation';
 import killPlayer from './backendCalls/killPlayer';
+import resetRoom from './backendCalls/resetRoom';
 
 const router=express.Router();
 
@@ -14,5 +15,6 @@ router.post('/getRoomInfo', getRoomInfo);
 router.post('/joinPublicRoom', joinPublicRoom);
 router.post('/updatePlayerLocation', updatePlayerLocation);
 router.post('/killPlayer', killPlayer);
+router.post('/resetRoom', resetRoom);
 
 export default router;

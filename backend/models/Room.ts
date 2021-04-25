@@ -15,7 +15,7 @@ type IPlayer = {
 type IRoom = {
     _id?: String,
     isPrivate: Boolean,
-    players: [IPlayer],
+    players: Array<IPlayer>,
     save: any,
     startTime: Number,
     endTime: Number,

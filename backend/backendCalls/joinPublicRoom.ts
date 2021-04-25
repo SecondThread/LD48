@@ -16,7 +16,7 @@ async function joinPublicRoom(req: Request<any>, res: Response<any>): Promise<vo
                 isPrivate: false, 
                 players: [],
                 startTime: now+SECOND_UNTIL_START*1000,
-                endTime: now+SECOND_UNTIL_START*1000+60*1000,
+                endTime: now+SECOND_UNTIL_START*1000+5*1000,
             });
             console.log('Created public room.');
             const createdId = created._id;

@@ -53,7 +53,7 @@ function RoomScreen(props: Props) {
     }, 1000);
 
     if (started && myId!=null) {
-        return <GameScreen roomId={props.roomId} playerId={myId!} roomEndTime={endTime}/>
+        return <GameScreen roomId={props.roomId} playerId={myId!} roomEndTime={endTime} nickname={props.username}/>
     }
 
     return <div className = "centerContent">

@@ -4,6 +4,7 @@ import drawImage, { drawCircle, drawText, getCameraPosition, ImageName, setCamer
 import GameObject from './GameObject';
 import Vec, { lerpV } from './geo/Vec';
 import Target from "./Target";
+import Bubble from './Bubble';
 
 const FROG_WIDTH=.5;
 const FROG_DRAW_Y_OFFSET=0;
@@ -49,7 +50,8 @@ class Frog extends GameObject {
     update(collisionSegs: CollisionSeg[], targets: Target[], frogs: Frog[], createObject: (x: GameObject) => void,
             killPlayer: (idToKill: string) => void): void {
         if (this.isMe) {
-            setCameraWidth(this.isShark?60:40);
+            //setCameraWidth(this.isShark?60:40);
+            setCameraWidth(200);
         }
         if (this.isShark) {
             this.onTarget=false;
@@ -68,6 +70,12 @@ class Frog extends GameObject {
                         killPlayer(frog._id);
                     }
                 }
+            }
+        }
+
+        if (this.velocity.mag()>0.1) {
+            if (Math.random()*1.6<this.velocity.mag2()) {
+                createObject(new Bubble(this.position.sub(this.velocity.unit().scale(this.isShark?4:1))));
             }
         }
 

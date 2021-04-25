@@ -1,6 +1,7 @@
 import {useEffect, useRef} from 'react';
-import drawImage, { drawText, getCameraPosition, screenPointToWorldPoint, setCTX, getCameraWidth } from './drawing/ImageLoader';
+import drawImage, { drawText, getCameraPosition, screenPointToWorldPoint, setCTX, getCameraWidth, setCameraWidth } from './drawing/ImageLoader';
 import GameObject from './GameObject';
+import BubbleSource from './BubbleSource';
 import Island from './Island';
 import "./GameScreen.css"
 import Vec from './geo/Vec';
@@ -13,8 +14,9 @@ import Blood from './Blood';
 
 type Props = {
   roomId: string,
-  playerId: string
-  roomEndTime: number;
+  playerId: string,
+  roomEndTime: number,
+  nickname: string,
 }
 
 const collisionSegs: Array<CollisionSeg> = [
@@ -82,10 +84,34 @@ const gameObjects: Array<GameObject> = [
   new Island("ROCK_ISLAND1", new Vec(10, -36), 40, 30, true),
 
   myFrog,
+
+  new Island("SEA_GRASS", new Vec(10, -28), 3, 15, true),
+  new Island("SEA_GRASS", new Vec(13, -27), 3, 18, false),  
+  new Island("SEA_GRASS", new Vec(18, -28), 3, 15, true),
+
+  new Island("SEA_GRASS", new Vec(-10, -40), 5, 21, true),
+  new Island("SEA_GRASS", new Vec(-15, -36), 6, 30, false),
+  new Island("SEA_GRASS", new Vec(-19, -38), 4, 25, true),
+
+  new Island("SEA_GRASS", new Vec(-44, -40), 5, 21, false),
+  new Island("SEA_GRASS", new Vec(-49, -42), 4, 15, true),
+
+  new Island("SEA_GRASS", new Vec(44, -40), 5, 21, true),
+  new Island("SEA_GRASS", new Vec(49, -42), 4, 15, false),
+
+  new Island("SEA_GRASS", new Vec(-84, -15), 2, 5, true),
+  new Island("SEA_GRASS", new Vec(-81, -15), 1.5, 4, true),
+  new Island("SEA_GRASS", new Vec(-77, -15), 2, 6, false),
+  new Island("SEA_GRASS", new Vec(-75, -15), 2, 5, false),
+
+  new BubbleSource(new Vec(-30, -45)),
+  new BubbleSource(new Vec(0, -30)),
+  new BubbleSource(new Vec(50, -45)),
+  new BubbleSource(new Vec(90, -45)),
+  new BubbleSource(new Vec(-93, -45)),
 ];
 
 function sendInfoToServer(roomId: string, userId: string): void {
-  console.log('Sending data to server'+ myFrog.position.x+" "+myFrog.position.y);
   fetch('/api/updatePlayerLocation', {
     method: 'POST',
     headers: {
@@ -102,9 +128,9 @@ function sendInfoToServer(roomId: string, userId: string): void {
       yVel: myFrog.velocity.y,
     }),
   }).then(res => res.text().then(data => {
-    console.log('Got response: '+data);
-    const json=JSON.parse(data);
-    console.log(json);
+    //console.log('Got response: '+data);
+    //const json=JSON.parse(data);
+    //console.log(json);
   }).catch((e) => console.log(e)));
 }
 
@@ -153,8 +179,29 @@ function renderTimeLeft(endTime: number) {
   drawText("Time Left: "+secondsLeft, getCameraPosition().add(new Vec(getCameraWidth()*.4, getCameraWidth()*.2)), "#333333", "50");
 }
 
+let calledResetRoom=false;
+function resetRoom(roomId: string, nickname: string) {
+  if (calledResetRoom) return;
+  calledResetRoom=true;
+  fetch('/api/resetRoom', {
+    method: 'POST',
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Credentials': 'true',
+    },
+    body: JSON.stringify({roomId}),
+  }).then(res => res.text().then(data => {
+    console.log('Got response: '+data);
+    const json=JSON.parse(data);
+    console.log(json);
+    window.location.href="http://localhost:3000/room/"+roomId+"?nickname="+nickname;
+  }).catch((e) => console.log(e)));
+}
+
 let resendInfoToServerCounter=0;
 let getInfoFromServerCounter=0;
+
 
 function GameScreen(props: Props) {
   const canvas = useRef(null);
@@ -172,6 +219,20 @@ function GameScreen(props: Props) {
     // dynamically assign the width and height to canvas
     const canvasEle = canvas.current! as HTMLCanvasElement;
     _resizeCanvas(canvasEle);
+
+    //TODO: check if frogs win
+
+    if (new Date().getTime()>props.roomEndTime) {
+      if (new Date().getTime()>props.roomEndTime+5000) {
+        resetRoom(props.roomId, props.nickname);
+        return;
+      }
+      drawImage("SHARK_WINS", getCameraPosition(), getCameraWidth(), getCameraWidth()/2, 0, 1, false);  
+      const center=getCameraPosition().add(new Vec(0, -getCameraWidth()*0.22));
+      drawText("Time's up!", center, "#ffcccc", "100");
+      return;
+
+    }
 
     
     //DRAW BACKGROUND
@@ -192,12 +253,15 @@ function GameScreen(props: Props) {
       gameObject.update(collisionSegs, targets, otherPlayers, x => toAdd.push(x), x => killPlayer(props.roomId, x));
     }
 
-    for (const gameObject of gameObjects) {
-      gameObject.render();
-    }
+    
     for (const gameObject of otherPlayers) {
       gameObject.render();
     }
+
+    for (const gameObject of gameObjects) {
+      gameObject.render();
+    }
+    
     for (const gameObject of targets) {
       gameObject.render();
     }
