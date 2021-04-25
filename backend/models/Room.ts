@@ -13,7 +13,7 @@ type IRoom = {
     _id?: String,
     isPrivate: Boolean,
     players: [IPlayer],
-    save: () => Promise<void>,
+    save: any,
 };
 
 const Room = mongoose.model('Room', new Schema({

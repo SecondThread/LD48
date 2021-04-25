@@ -12,27 +12,33 @@ const REACH_DIST=6;
 class Shark extends GameObject {
     position: Vec;
     angle: number;
-    velocity: Vec = new Vec(0, 0);
+    velocity: Vec;
     facingRight: boolean = true;
     drawImage: ImageName="FROG2";
     updatesUntilSpring: number = 0;
     onTarget: boolean = false;
+    isMe: boolean;
 
-    constructor(position: Vec) {
+    constructor(position: Vec, velocity: Vec, isMe: boolean) {
         super();
         this.position=position;
+        this.velocity=velocity;
         this.angle=0;
+        this.isMe=isMe;
     }
 
     update(collisionSegs: CollisionSeg[], targets: Target[]): void {
-        let nearTarget=targets.filter(x => x.position.sub(this.position).mag()<REACH_DIST && x.isWater != this.onTarget);
-        let farTargets=targets.filter(x => nearTarget.indexOf(x)==-1);
-        if (nearTarget.length==0) {
-            farTargets.map(x => x.isNear=false);
-        }
-        else {
-            nearTarget.map(x => x.isNear=false);
-            farTargets.map(x => x.isNear=true);
+
+        if (this.isMe) {
+            let nearTarget=targets.filter(x => x.position.sub(this.position).mag()<REACH_DIST && x.isWater !== this.onTarget);
+            let farTargets=targets.filter(x => nearTarget.indexOf(x)===-1);
+            if (nearTarget.length===0) {
+                farTargets.map(x => x.isNear=false);
+            }
+            else {
+                nearTarget.map(x => x.isNear=false);
+                farTargets.map(x => x.isNear=true);
+            }
         }
         
         
@@ -65,11 +71,13 @@ class Shark extends GameObject {
         
         
         //lerp camera position
-        const cameraPos=getCameraPosition();
-        const targetCameraPosition=this.position.add(new Vec(this.facingRight?5:-5, 0));
-        let speed=cameraPos.sub(targetCameraPosition).mag2()/500;
-        speed=Math.min(0.1, Math.max(0.01, speed));
-        setCameraPosition(lerpV(cameraPos, targetCameraPosition, speed));
+        if (this.isMe) {
+            const cameraPos=getCameraPosition();
+            const targetCameraPosition=this.position.add(new Vec(this.facingRight?5:-5, 0));
+            let speed=cameraPos.sub(targetCameraPosition).mag2()/500;
+            speed=Math.min(0.1, Math.max(0.01, speed));
+            setCameraPosition(lerpV(cameraPos, targetCameraPosition, speed));
+        }
     }
 
 
@@ -80,6 +88,9 @@ class Shark extends GameObject {
     }
 
     processClick(mouseClick: Vec, targets: Target[]): void {
+        if (!this.isMe) {
+            return;
+        }
 
         //try to put it to a target
         for (const target of targets.filter(x=> x.isNear)) {

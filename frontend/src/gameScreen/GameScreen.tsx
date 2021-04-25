@@ -7,8 +7,8 @@ import Vec from './geo/Vec';
 import { useInterval } from './useInterval';
 import Target from './Target';
 import CollisionSeg from './CollisionSeg';
-import Shark from './Shark';
 import Frog from './Frog';
+import getRoomInfo from './getRoomInfo';
 
 type Props = {
   roomId: string,
@@ -61,7 +61,8 @@ const targets: Array<Target> = [
   new Target(new Vec(93, 6), true),
 ]
 
-const myFrog=new Frog(new Vec(10, -10));
+const myFrog=new Frog(new Vec(10, -10), new Vec(0, 0), true);
+let otherPlayers: Array<Frog> = [];
 
 const gameObjects: Array<GameObject> = [
   //islands
@@ -82,10 +83,8 @@ const gameObjects: Array<GameObject> = [
   myFrog,
 ];
 
-
-
 function sendInfoToServer(roomId: string, userId: string): void {
-  console.log('Sending info to server '+roomId+" "+userId)
+  console.log('Sending data to server'+ myFrog.position.x+" "+myFrog.position.y);
   fetch('/api/updatePlayerLocation', {
     method: 'POST',
     headers: {
@@ -102,7 +101,7 @@ function sendInfoToServer(roomId: string, userId: string): void {
       yVel: myFrog.velocity.y,
     }),
   }).then(res => res.json().then(data => {
-    console.log('Sent data to server');
+    console.log('Got response: ');
     console.log(data);
   }).catch((e) => console.log(e)));
 }
@@ -128,6 +127,7 @@ function handleClick(x: number, y: number): void {
 
 
 let resendInfoToServerCounter=0;
+let getInfoFromServerCounter=59;
 
 function GameScreen(props: Props) {
   const canvas = useRef(null);
@@ -157,19 +157,37 @@ function GameScreen(props: Props) {
       gameObject.update(collisionSegs, targets);
     }
     for (const gameObject of targets) {
+      //we don't want other players messing with our targets
+      gameObject.update(collisionSegs, []);
+    }
+    for (const gameObject of otherPlayers) {
       gameObject.update(collisionSegs, targets);
     }
 
     for (const gameObject of gameObjects) {
       gameObject.render();
     }
+    for (const gameObject of otherPlayers) {
+      gameObject.render();
+    }
     for (const gameObject of targets) {
       gameObject.render();
     }
+    
     resendInfoToServerCounter++;
-    if (resendInfoToServerCounter == 60) {
+    if (resendInfoToServerCounter === 60) {
       resendInfoToServerCounter=0;
       sendInfoToServer(props.roomId, props.playerId);
+    }
+    getInfoFromServerCounter++;
+    if (getInfoFromServerCounter === 60) {
+      getInfoFromServerCounter=0;
+      getRoomInfo(props.roomId, room => {
+        otherPlayers = room.players.filter(x => x._id !== props.playerId).map(player => 
+          new Frog(new Vec(player.x, player.y), new Vec(player.xVel, player.yVel), false));
+          console.log('Got other players: ');
+          console.log(otherPlayers);
+      });
     }
 
   }, 1000/60);

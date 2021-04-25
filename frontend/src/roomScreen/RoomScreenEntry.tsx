@@ -1,7 +1,6 @@
 
 import { useState, useEffect } from 'react';
 import {useLocation, useHistory, useParams } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import RoomScreen from './RoomScreen';
 
 type HasRoomId = {
@@ -51,7 +50,6 @@ function RoomScreenEntry() {
       </div>
     );
   }
-  toast.success('Name is '+name);
   return (
     <div>
         <RoomScreen username={name} roomId={roomId} />

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import {useLocation, useHistory } from 'react-router-dom';
 import {toast} from 'react-toastify';
+import { useInterval } from '../gameScreen/useInterval';
 import './TitleScreen.css';
 
 const requestOptions = {
@@ -39,7 +40,7 @@ function TitleScreen() {
   
   const full = new URLSearchParams(search).get('lobbyFull');
   const history = useHistory();
-  
+
   useEffect(() => {
     if (full != null) {
       //TODO toast!
