@@ -2,6 +2,7 @@ import Vec from "../geo/Vec";
 
 type ImageName = 
     "COIN" | 
+    "BLOOD" | 
     "BOARDER" | 
     "FROG" | 
     "FROG2" | 
@@ -17,11 +18,13 @@ type ImageName =
     "SKY" | 
     "TREASURE"|
     "TARGET";
+
 let ctx: CanvasRenderingContext2D | null = null;
 
 const images = {
     COIN: new Image(),
     BOARDER: new Image(),
+    BLOOD: new Image(),
     FROG: new Image(),
     FROG2: new Image(),
     ISLAND1: new Image(),
@@ -39,6 +42,7 @@ const images = {
 };
 
 images.COIN.src="/Coin.png";
+images.BLOOD.src="/Blood1.png";
 images.BOARDER.src="/Boarder.png";
 images.FROG.src="/Frog.png";
 images.FROG2.src="/Frog2.png";

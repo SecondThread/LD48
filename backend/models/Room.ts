@@ -1,8 +1,9 @@
 import mongoose, { Schema } from 'mongoose';
 
 type IPlayer = {
-    _id?: String,
+    _id?: string,
     timeUpdated: Number,
+    lastTimeDied: Number,
     isShark: Boolean,
     username: String,
     x: Number,
@@ -25,6 +26,7 @@ const Room = mongoose.model('Room', new Schema({
     isPrivate: Boolean,
     players: [{        
         timeUpdated: Number,
+        lastTimeDied: Number,
         isShark: Boolean,
         username: String,
         x: Number,

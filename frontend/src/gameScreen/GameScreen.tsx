@@ -9,6 +9,7 @@ import Target from './Target';
 import CollisionSeg from './CollisionSeg';
 import Frog from './Frog';
 import getRoomInfo from './getRoomInfo';
+import Blood from './Blood';
 
 type Props = {
   roomId: string,
@@ -79,7 +80,6 @@ const gameObjects: Array<GameObject> = [
   new Island("ROCK_ISLAND2", new Vec(30, -10), 20, 30, true),
   new Island("ROCK_ISLAND1", new Vec(10, -36), 40, 30, true),
 
-  //new Shark(new Vec(10, -10)),
   myFrog,
 ];
 
@@ -99,6 +99,25 @@ function sendInfoToServer(roomId: string, userId: string): void {
       y: myFrog.position.y,
       xVel: myFrog.velocity.x,
       yVel: myFrog.velocity.y,
+    }),
+  }).then(res => res.text().then(data => {
+    console.log('Got response: '+data);
+    const json=JSON.parse(data);
+    console.log(json);
+  }).catch((e) => console.log(e)));
+}
+
+function killPlayer(roomId: string, userId: string): void {
+  fetch('/api/killPlayer', {
+    method: 'POST',
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Credentials': 'true',
+    },
+    body: JSON.stringify({
+      userId,
+      roomId
     }),
   }).then(res => res.text().then(data => {
     console.log('Got response: '+data);
@@ -154,15 +173,16 @@ function GameScreen(props: Props) {
     drawImage("BOARDER", new Vec(50, 0), 100, 100, 0, 1, true);
     drawImage("BOARDER", new Vec(-50, 0), 100, 100, 0, 1, false);
 
+    const toAdd=Array<GameObject>();
     for (const gameObject of gameObjects) {
-      gameObject.update(collisionSegs, targets);
+      gameObject.update(collisionSegs, targets, otherPlayers, x => toAdd.push(x), x => killPlayer(props.roomId, x));
     }
     for (const gameObject of targets) {
       //we don't want other players messing with our targets
-      gameObject.update(collisionSegs, []);
+      gameObject.update(collisionSegs, [], otherPlayers, x => toAdd.push(x), x => killPlayer(props.roomId, x));
     }
     for (const gameObject of otherPlayers) {
-      gameObject.update(collisionSegs, targets);
+      gameObject.update(collisionSegs, targets, otherPlayers, x => toAdd.push(x), x => killPlayer(props.roomId, x));
     }
 
     for (const gameObject of gameObjects) {
@@ -174,7 +194,8 @@ function GameScreen(props: Props) {
     for (const gameObject of targets) {
       gameObject.render();
     }
-    
+    gameObjects.push(...toAdd);
+
     resendInfoToServerCounter++;
     if (resendInfoToServerCounter === 20) {
       resendInfoToServerCounter=0;
@@ -189,7 +210,18 @@ function GameScreen(props: Props) {
           myFrog.isShark=me.isShark;
           myFrog._id=me._id;
           myFrog.name=me.username;
+          if (!myFrog.isShark && myFrog.lastTimeDied<me.lastTimeDied) {
+            console.log("Looks like I died, respawning.");
+            myFrog.lastTimeDied=me.lastTimeDied;
+            gameObjects.push(new Blood(myFrog.position));
+            const targetIndex=Math.floor(Math.random()*11);
+            myFrog.position=targets[targetIndex].position;
+            myFrog.velocity=new Vec(0, 0);
+            myFrog.onTarget=true;
+            sendInfoToServer(props.roomId, props.playerId);
+          }
         }
+
         room.players.filter(x => x._id !== props.playerId)
           .map(player =>  {
             const matching=otherPlayers.find(x => x._id===player._id);
@@ -201,6 +233,14 @@ function GameScreen(props: Props) {
                 matching.lastTimeUpdated = player.timeUpdated;
                 matching.position=new Vec(player.x, player.y);
                 matching.velocity=new Vec(player.xVel, player.yVel);
+              }
+              if (!myFrog.isShark) {
+                if (matching.lastTimeDied < player.lastTimeDied) {
+                  gameObjects.push(new Blood(matching.position));
+                  matching.position=new Vec(0, 100);
+                  matching.drawPosition=matching.position;  
+                }
+                matching.lastTimeDied=player.lastTimeDied;
               }
             }
             

@@ -1,3 +1,4 @@
+import Blood from "./Blood";
 import CollisionSeg from "./CollisionSeg";
 import drawImage, { drawCircle, drawText, getCameraPosition, ImageName, setCameraPosition, setCameraWidth} from "./drawing/ImageLoader";
 import GameObject from './GameObject';
@@ -25,12 +26,13 @@ class Frog extends GameObject {
     updatesUntilSpring: number = 0;
     onTarget: boolean = false;
     isMe: boolean;
-    _id: String;
+    _id: string;
     lastTimeUpdated: number;
+    lastTimeDied: number = 0;
     isShark: boolean;
     name: string;
 
-    constructor(position: Vec, velocity: Vec, isMe: boolean, _id: String, lastTimeUpdated: number, isShark: boolean, name: string) {
+    constructor(position: Vec, velocity: Vec, isMe: boolean, _id: string, lastTimeUpdated: number, isShark: boolean, name: string) {
         super();
         this.position=position;
         this.drawPosition=position;
@@ -44,13 +46,29 @@ class Frog extends GameObject {
         this.name=name;
     }
 
-    update(collisionSegs: CollisionSeg[], targets: Target[]): void {
+    update(collisionSegs: CollisionSeg[], targets: Target[], frogs: Frog[], createObject: (x: GameObject) => void,
+            killPlayer: (idToKill: string) => void): void {
         if (this.isMe) {
             setCameraWidth(this.isShark?60:40);
         }
         if (this.isShark) {
             this.onTarget=false;
             this.drawImage="SHARK_STRAIGHT";
+            if (this.isMe) {
+                //try to eat other frogs
+                const mouthLocation=this.position.add(new Vec(this.facingRight?1:-1, 0));
+                const myRadius=2;
+                for (const frog of frogs) {
+                    const drawLocation=frog.drawPosition;
+                    if (mouthLocation.sub(drawLocation).mag()<myRadius) {
+                        frog.position=new Vec(0, 100);
+                        frog.drawPosition=new Vec(0, 100);
+                        const blood=new Blood(drawLocation);
+                        createObject(blood);
+                        killPlayer(frog._id);
+                    }
+                }
+            }
         }
 
         this.drawPosition=lerpV(this.drawPosition, this.position, 0.1);
