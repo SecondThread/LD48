@@ -9,7 +9,6 @@ import Target from './Target';
 import CollisionSeg from './CollisionSeg';
 import Frog from './Frog';
 import getRoomInfo from './getRoomInfo';
-import { getPositionOfLineAndCharacter } from 'typescript';
 
 type Props = {
   roomId: string,
@@ -62,7 +61,7 @@ const targets: Array<Target> = [
   new Target(new Vec(93, 6), true),
 ]
 
-const myFrog=new Frog(new Vec(10, -10), new Vec(0, 0), true, "", new Date().getTime(), false);
+const myFrog=new Frog(new Vec(10, -10), new Vec(0, 0), true, "", new Date().getTime(), false, "");
 let otherPlayers: Array<Frog> = [];
 
 const gameObjects: Array<GameObject> = [
@@ -189,12 +188,13 @@ function GameScreen(props: Props) {
         if (me!=null) {
           myFrog.isShark=me.isShark;
           myFrog._id=me._id;
+          myFrog.name=me.username;
         }
         room.players.filter(x => x._id !== props.playerId)
           .map(player =>  {
             const matching=otherPlayers.find(x => x._id===player._id);
             if (matching==null) {
-              otherPlayers.push(new Frog(new Vec(player.x, player.y), new Vec(player.xVel, player.yVel), false, player._id, player.timeUpdated, player.isShark));
+              otherPlayers.push(new Frog(new Vec(player.x, player.y), new Vec(player.xVel, player.yVel), false, player._id, player.timeUpdated, player.isShark, player.username));
             }
             else {
               if (matching.lastTimeUpdated < player.timeUpdated) {

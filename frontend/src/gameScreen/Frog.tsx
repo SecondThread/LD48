@@ -1,5 +1,5 @@
 import CollisionSeg from "./CollisionSeg";
-import drawImage, { drawCircle, getCameraPosition, ImageName, setCameraPosition, setCameraWidth} from "./drawing/ImageLoader";
+import drawImage, { drawCircle, drawText, getCameraPosition, ImageName, setCameraPosition, setCameraWidth} from "./drawing/ImageLoader";
 import GameObject from './GameObject';
 import Vec, { lerpV } from './geo/Vec';
 import Target from "./Target";
@@ -28,8 +28,9 @@ class Frog extends GameObject {
     _id: String;
     lastTimeUpdated: number;
     isShark: boolean;
+    name: string;
 
-    constructor(position: Vec, velocity: Vec, isMe: boolean, _id: String, lastTimeUpdated: number, isShark: boolean) {
+    constructor(position: Vec, velocity: Vec, isMe: boolean, _id: String, lastTimeUpdated: number, isShark: boolean, name: string) {
         super();
         this.position=position;
         this.drawPosition=position;
@@ -40,6 +41,7 @@ class Frog extends GameObject {
         this.lastTimeUpdated=lastTimeUpdated;
         this.isShark = isShark;
         this.drawImage=isShark?"SHARK_STRAIGHT":"FROG2";
+        this.name=name;
     }
 
     update(collisionSegs: CollisionSeg[], targets: Target[]): void {
@@ -139,6 +141,14 @@ class Frog extends GameObject {
         const drawHeight=this.isShark?SHARK_DRAW_HEIGHT:FROG_DRAW_HEIGHT;
         const drawFacingRight = this.isShark?this.facingRight:!this.facingRight;
         drawImage(this.drawImage, myDrawPosition.add(new Vec(0, myOffset)), drawHeight, drawHeight, drawAngle, 1, drawFacingRight);
+
+        const yAdd=new Vec(0, drawHeight/4);
+        if (this.isShark) {
+            yAdd.x=this.facingRight?1:-1;
+        }
+
+        const color=this.isShark?"#333333":"#33ee33"
+        drawText(this.name, this.position.add(yAdd), color);
     }
 
     processClick(mouseClick: Vec, targets: Target[]): void {

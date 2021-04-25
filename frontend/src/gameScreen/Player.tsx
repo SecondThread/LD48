@@ -3,7 +3,7 @@ type Player = {
     _id: String,
     isShark: boolean,
     timeUpdated: number,
-    username: String,
+    username: string,
     x: number;
     y: number;
     xVel: number;

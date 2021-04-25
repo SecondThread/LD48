@@ -164,6 +164,15 @@ function drawSeg(from: Vec, to: Vec) {
     ctx?.stroke();
 }
 
+function drawText(text: string, worldSpace: Vec, color: string): void {
+    if (ctx==null) return;
+    const screenSpace=worldPointToScreenPoint(worldSpace.x, worldSpace.y);
+    ctx.fillStyle=color;
+    ctx.font = '30px georgia';
+    ctx.textAlign="center";
+    ctx.fillText(text, screenSpace.x, screenSpace.y)
+}
+
 export default drawImage;
-export {setCTX, getCameraPosition, setCameraPosition, screenPointToWorldPoint, drawSeg, drawCircle, setCameraWidth};
+export {setCTX, getCameraPosition, setCameraPosition, screenPointToWorldPoint, drawSeg, drawCircle, setCameraWidth, drawText};
 export type {ImageName};
