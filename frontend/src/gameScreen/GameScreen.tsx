@@ -1,5 +1,5 @@
 import {useEffect, useRef} from 'react';
-import drawImage, { screenPointToWorldPoint, setCTX } from './drawing/ImageLoader';
+import drawImage, { drawText, getCameraPosition, screenPointToWorldPoint, setCTX, getCameraWidth } from './drawing/ImageLoader';
 import GameObject from './GameObject';
 import Island from './Island';
 import "./GameScreen.css"
@@ -14,6 +14,7 @@ import Blood from './Blood';
 type Props = {
   roomId: string,
   playerId: string
+  roomEndTime: number;
 }
 
 const collisionSegs: Array<CollisionSeg> = [
@@ -145,6 +146,12 @@ function handleClick(x: number, y: number): void {
   }
 }
 
+function renderTimeLeft(endTime: number) {
+  const currentTime=new Date().getTime();
+  const timeLeft=endTime-currentTime;
+  const secondsLeft=Math.round(timeLeft/1000);
+  drawText("Time Left: "+secondsLeft, getCameraPosition().add(new Vec(getCameraWidth()*.4, getCameraWidth()*.2)), "#333333", "50");
+}
 
 let resendInfoToServerCounter=0;
 let getInfoFromServerCounter=0;
@@ -195,17 +202,20 @@ function GameScreen(props: Props) {
       gameObject.render();
     }
     gameObjects.push(...toAdd);
+    renderTimeLeft(props.roomEndTime);
+
 
     resendInfoToServerCounter++;
     if (resendInfoToServerCounter === 20) {
       resendInfoToServerCounter=0;
       sendInfoToServer(props.roomId, props.playerId);
     }
+
     getInfoFromServerCounter++;
     if (getInfoFromServerCounter === 20) {
       getInfoFromServerCounter=0;
       getRoomInfo(props.roomId, room => {
-        const me=room.players.find(x => x._id==props.playerId);
+        const me=room.players.find(x => x._id===props.playerId);
         if (me!=null) {
           myFrog.isShark=me.isShark;
           myFrog._id=me._id;

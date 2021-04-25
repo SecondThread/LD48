@@ -14,6 +14,7 @@ type Props= {
 
 function RoomScreen(props: Props) {
     const [myId, setMyId] = useState(null);
+    const [endTime, setEndTime] = useState(0);
     const [players, setPlayers] = useState(Array<Player>());
     const [started, setStarted] = useState(false);
     const [secondUntilStart, setSecondUntilStart] = useState(60);
@@ -46,12 +47,13 @@ function RoomScreen(props: Props) {
           const started=currentTime>match.startTime;
           setStarted(started);
           setSecondUntilStart(Math.round((match.startTime-currentTime)/1000));
+          setEndTime(match.endTime);
         })
       }
     }, 1000);
 
     if (started && myId!=null) {
-        return <GameScreen roomId={props.roomId} playerId={myId!}/>
+        return <GameScreen roomId={props.roomId} playerId={myId!} roomEndTime={endTime}/>
     }
 
     return <div className = "centerContent">

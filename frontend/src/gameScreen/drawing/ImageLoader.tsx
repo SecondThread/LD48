@@ -16,7 +16,9 @@ type ImageName =
     "SHARK_STRAIGHT" | 
     "SHARK_UP" | 
     "SKY" | 
-    "TREASURE"|
+    "TREASURE" | 
+    "SHARK_WINS" | 
+    "FROGS_WIN" | 
     "TARGET";
 
 let ctx: CanvasRenderingContext2D | null = null;
@@ -38,6 +40,8 @@ const images = {
     SHARK_UP: new Image(),
     SKY: new Image(),
     TREASURE: new Image(),
+    SHARK_WINS: new Image(),
+    FROGS_WIN: new Image(),
     TARGET: new Image(),
 };
 
@@ -57,6 +61,8 @@ images.SHARK_STRAIGHT.src="/SharkStraight.png";
 images.SHARK_UP.src="/SharkUp.png";
 images.SKY.src="/Sky.png";
 images.TREASURE.src="/Treasure.png";
+images.SHARK_WINS.src="/Target.png";
+images.FROGS_WIN.src="/Target.png";
 images.TARGET.src="/Target.png";
 
 function setCTX(context: CanvasRenderingContext2D) {
@@ -68,6 +74,10 @@ let cameraPosition = new Vec(0, -10);
 
 function setCameraWidth(cameraWidth: number) {
     CAMERA_WIDTH=cameraWidth;
+}
+
+function getCameraWidth(): number {
+    return CAMERA_WIDTH;
 }
 
 function setCameraPosition(newCameraPos: Vec): void {
@@ -168,15 +178,15 @@ function drawSeg(from: Vec, to: Vec) {
     ctx?.stroke();
 }
 
-function drawText(text: string, worldSpace: Vec, color: string): void {
+function drawText(text: string, worldSpace: Vec, color: string, size: string="30"): void {
     if (ctx==null) return;
     const screenSpace=worldPointToScreenPoint(worldSpace.x, worldSpace.y);
     ctx.fillStyle=color;
-    ctx.font = '30px georgia';
+    ctx.font = size+'px georgia';
     ctx.textAlign="center";
     ctx.fillText(text, screenSpace.x, screenSpace.y)
 }
 
 export default drawImage;
-export {setCTX, getCameraPosition, setCameraPosition, screenPointToWorldPoint, drawSeg, drawCircle, setCameraWidth, drawText};
+export {setCTX, getCameraPosition, setCameraPosition, screenPointToWorldPoint, drawSeg, drawCircle, setCameraWidth, getCameraWidth, drawText};
 export type {ImageName};
