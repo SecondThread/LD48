@@ -6,6 +6,7 @@ import joinPublicRoom from './backendCalls/joinPublicRoom';
 import updatePlayerLocation from './backendCalls/updatePlayerLocation';
 import killPlayer from './backendCalls/killPlayer';
 import resetRoom from './backendCalls/resetRoom';
+import markFrogsWon from './backendCalls/markFrogsWon';
 
 const router=express.Router();
 
@@ -16,5 +17,6 @@ router.post('/joinPublicRoom', joinPublicRoom);
 router.post('/updatePlayerLocation', updatePlayerLocation);
 router.post('/killPlayer', killPlayer);
 router.post('/resetRoom', resetRoom);
+router.post('/markFrogsWon', markFrogsWon);
 
 export default router;

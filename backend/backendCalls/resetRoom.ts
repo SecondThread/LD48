@@ -18,9 +18,10 @@ async function resetRoom(req: Request<any>, res: Response<any>): Promise<void> {
 
             doc.players=[];
             const now=new Date().getTime();
-            const secondsUntilStart=5;
+            const secondsUntilStart=15;
             doc.startTime = now+secondsUntilStart*1000;
-            doc.endTime = now+secondsUntilStart*1000 + 600 * 1000;
+            doc.endTime = now+secondsUntilStart*1000 + 60 * 1000;
+            doc.frogsWon = false;
             doc.save((err:any, result:any) => {
                 if (err!=null) {
                     console.log(err);

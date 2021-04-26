@@ -48,7 +48,7 @@ class Treasure extends GameObject {
         if (this.percentCaptured>=1) {
             this.onCooldown=true;
             //TODO: actually capture it
-            myFrog.money += this.image==="TREASURE"?190:20;
+            myFrog.money += this.image==="TREASURE"?100:20;
         }
         if (this.percentCaptured<=0) {
             this.onCooldown=false;

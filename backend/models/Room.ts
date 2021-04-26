@@ -15,6 +15,7 @@ type IPlayer = {
 type IRoom = {
     _id?: String,
     isPrivate: Boolean,
+    frogsWon: Boolean,
     players: Array<IPlayer>,
     save: any,
     startTime: Number,
@@ -34,6 +35,7 @@ const Room = mongoose.model('Room', new Schema({
         xVel: Number,
         yVel: Number,
     }],
+    frogsWon: Boolean,
     startTime: Number,
     endTime: Number,
 }));

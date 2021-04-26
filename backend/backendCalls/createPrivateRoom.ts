@@ -7,6 +7,7 @@ async function createRoom(req: Request<any>, res: Response<any>): Promise<void> 
         const now=new Date().getTime();
         const created = await Room.create({
             isPrivate: true, 
+            frogsWon: false,
             players: [],
             startTime: now+30*1000,
             endTime: now+30*1000+60*1000,

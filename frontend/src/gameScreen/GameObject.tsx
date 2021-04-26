@@ -14,7 +14,7 @@ class GameObject {
     render(): void {
 
     }
-    processClick(mouseClick: Vec, targets: Target[]) {
+    processClick(mouseClick: Vec, targets: Target[], roomId: string) {
 
     }
 

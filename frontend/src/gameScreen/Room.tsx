@@ -5,6 +5,7 @@ type Room = {
     players: Player[],
     startTime: number,
     endTime: number,
+    frogsWon: boolean,
 };
 
 export type {Room};

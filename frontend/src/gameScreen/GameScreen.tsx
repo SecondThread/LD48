@@ -12,6 +12,7 @@ import Frog from './Frog';
 import getRoomInfo from './getRoomInfo';
 import Blood from './Blood';
 import Treasure from './Treasure';
+import Bank from './Bank';
 
 type Props = {
   roomId: string,
@@ -119,6 +120,7 @@ const gameObjects: Array<GameObject> = [
   new Island("SEA_GRASS", new Vec(-75, -15), 2, 5, false),
 
   new Island("THE_SHOP", new Vec(40, 15), 30, 25, false),
+  new Bank(new Vec(40, 15)),
 
   new BubbleSource(new Vec(-30, -45)),
   new BubbleSource(new Vec(0, -30)),
@@ -179,13 +181,12 @@ function _resizeCanvas(canvas: HTMLCanvasElement): void {
   }
 }
 
-function handleClick(x: number, y: number): void {
+function handleClick(x: number, y: number, roomId: string): void {
   const worldPoint=screenPointToWorldPoint(new Vec(x, y));
-  console.log("Clicked "+worldPoint.x+" "+worldPoint.y);
+  //console.log("Clicked "+worldPoint.x+" "+worldPoint.y);
   
-  //TODO: use this for movement or something
   for (const gameObject of gameObjects) {
-    gameObject.processClick(worldPoint, targets);
+    gameObject.processClick(worldPoint, targets, roomId);
   }
 }
 
@@ -218,6 +219,8 @@ function resetRoom(roomId: string, nickname: string) {
 
 let resendInfoToServerCounter=0;
 let getInfoFromServerCounter=0;
+let frogsWon: boolean = false;
+let endRoomTime: number = 0;
 
 
 function GameScreen(props: Props) {
@@ -238,6 +241,19 @@ function GameScreen(props: Props) {
     _resizeCanvas(canvasEle);
 
     //TODO: check if frogs win
+    
+    if (frogsWon) {
+      drawImage("FROGS_WIN", getCameraPosition(), getCameraWidth(), getCameraWidth()/2, 0, 1, false);  
+      const center=getCameraPosition().add(new Vec(0, -getCameraWidth()*0.22));
+      drawText("Frogs win!", center, "#ffcccc", "100");
+      
+      if (new Date().getTime()>endRoomTime+5000) {
+        resetRoom(props.roomId, props.nickname);
+        return;
+      }
+
+      return;
+    }
 
     if (new Date().getTime()>props.roomEndTime) {
       if (new Date().getTime()>props.roomEndTime+5000) {
@@ -297,6 +313,10 @@ function GameScreen(props: Props) {
       getInfoFromServerCounter=0;
       getRoomInfo(props.roomId, room => {
         const me=room.players.find(x => x._id===props.playerId);
+        if (room.frogsWon) {
+          frogsWon=true;
+          endRoomTime=new Date().getTime();
+        }
         if (me!=null) {
           myFrog.isShark=me.isShark;
           myFrog._id=me._id;
@@ -343,7 +363,7 @@ function GameScreen(props: Props) {
   }, 1000/60);
   return (
     <div className="App">
-        <canvas ref={canvas} className="mainCanvas" onClick={e => handleClick(e.clientX, e.clientY)}>
+        <canvas ref={canvas} className="mainCanvas" onClick={e => handleClick(e.clientX, e.clientY, props.roomId)}>
         </canvas>
     </div>
   );
