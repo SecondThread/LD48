@@ -8,11 +8,16 @@ class Target extends GameObject {
     position: Vec;
     isWater: boolean;
     isNear: boolean = false;
+    isBank: boolean = false;
 
-    constructor(position: Vec, isWater: boolean = false) {
+    constructor(position: Vec, isWater: boolean = false, isBank: boolean = false) {
         super();
         this.position=position;
         this.isWater=isWater;
+        this.isBank=isBank;
+        if (this.isBank) {
+            console.log('Have thing with bank!');
+        }
     }
 
     render(): void {

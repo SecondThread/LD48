@@ -20,6 +20,7 @@ type ImageName =
     "TREASURE" | 
     "SHARK_WINS" | 
     "FROGS_WIN" | 
+    "THE_SHOP" | 
     "TARGET";
 
 let ctx: CanvasRenderingContext2D | null = null;
@@ -45,6 +46,7 @@ const images = {
     SHARK_WINS: new Image(),
     FROGS_WIN: new Image(),
     TARGET: new Image(),
+    THE_SHOP: new Image(),
 };
 
 images.COIN.src="/Coin.png";
@@ -67,6 +69,7 @@ images.TREASURE.src="/Treasure.png";
 images.SHARK_WINS.src="/SharkWins.png";
 images.FROGS_WIN.src="/FrogsWin.png";
 images.TARGET.src="/Target.png";
+images.THE_SHOP.src="/TheShop.png";
 
 function setCTX(context: CanvasRenderingContext2D) {
     ctx=context;

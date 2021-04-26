@@ -217,6 +217,10 @@ class Frog extends GameObject {
                     this.position=target.position;
                     this.onTarget=true;
                     
+                    if (target.isBank) {
+                        this.moneyInBank+=this.money;
+                        this.money=0;
+                    }
                 }
                 return;
             }

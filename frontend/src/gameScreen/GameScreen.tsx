@@ -51,8 +51,8 @@ const targets: Array<Target> = [
   new Target(new Vec(-26, 13)),
   new Target(new Vec(-8, 12)),
   new Target(new Vec(8, 12)),
-  new Target(new Vec(25, 12)),
-  new Target(new Vec(55, 12)),
+  new Target(new Vec(25, 12), false, true),
+  new Target(new Vec(55, 12), false, true),
   new Target(new Vec(75, 12.4)),
   new Target(new Vec(85, 12)),
 
@@ -118,11 +118,14 @@ const gameObjects: Array<GameObject> = [
   new Island("SEA_GRASS", new Vec(-77, -15), 2, 6, false),
   new Island("SEA_GRASS", new Vec(-75, -15), 2, 5, false),
 
+  new Island("THE_SHOP", new Vec(40, 15), 30, 25, false),
+
   new BubbleSource(new Vec(-30, -45)),
   new BubbleSource(new Vec(0, -30)),
   new BubbleSource(new Vec(50, -45)),
   new BubbleSource(new Vec(90, -45)),
   new BubbleSource(new Vec(-93, -45)),
+  
 ];
 
 function sendInfoToServer(roomId: string, userId: string): void {
