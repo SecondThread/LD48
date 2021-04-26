@@ -7,7 +7,7 @@ import Target from "./Target";
 class GameObject {
     
     update(collisionSegs: CollisionSeg[], targets: Target[], frogs: Frog[], createObject: (x: GameObject) => void,
-        killPlayer: (idToKill: string) => void): void {
+        killPlayer: (idToKill: string) => void, myFrog: Frog): void {
             
     }
 

@@ -181,15 +181,29 @@ function drawSeg(from: Vec, to: Vec) {
     ctx?.stroke();
 }
 
-function drawText(text: string, worldSpace: Vec, color: string, size: string="30"): void {
+function drawText(text: string, worldSpace: Vec, color: string, size: string="30", alpha: number=1): void {
     if (ctx==null) return;
     const screenSpace=worldPointToScreenPoint(worldSpace.x, worldSpace.y);
+    const oldAlpha=ctx.globalAlpha;
+    ctx.globalAlpha=alpha;
     ctx.fillStyle=color;
     ctx.font = size+'px georgia';
     ctx.textAlign="center";
-    ctx.fillText(text, screenSpace.x, screenSpace.y)
+    ctx.fillText(text, screenSpace.x, screenSpace.y);
+    ctx.globalAlpha=oldAlpha;
+}
+
+function drawRect(topLeft: Vec, bottomRight: Vec, color: string, alpha: number=1) {
+    if (ctx==null) return;
+    ctx.fillStyle=color;
+    const oldAlpha=ctx.globalAlpha;
+    ctx.globalAlpha=alpha;
+    const topLeftScreen=worldPointToScreenPoint(topLeft.x, topLeft.y);
+    const topRightScreen=worldPointToScreenPoint(bottomRight.x, bottomRight.y);
+    ctx.fillRect(topLeftScreen.x, topLeftScreen.y, topRightScreen.x-topLeftScreen.x, topRightScreen.y-topLeftScreen.y);
+    ctx.globalAlpha=oldAlpha;
 }
 
 export default drawImage;
-export {setCTX, getCameraPosition, setCameraPosition, screenPointToWorldPoint, drawSeg, drawCircle, setCameraWidth, getCameraWidth, drawText};
+export {setCTX, getCameraPosition, setCameraPosition, screenPointToWorldPoint, drawSeg, drawCircle, setCameraWidth, getCameraWidth, drawText, drawRect};
 export type {ImageName};

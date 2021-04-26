@@ -20,7 +20,7 @@ async function resetRoom(req: Request<any>, res: Response<any>): Promise<void> {
             const now=new Date().getTime();
             const secondsUntilStart=5;
             doc.startTime = now+secondsUntilStart*1000;
-            doc.endTime = now+secondsUntilStart*1000 + 60 * 1000;
+            doc.endTime = now+secondsUntilStart*1000 + 600 * 1000;
             doc.save((err:any, result:any) => {
                 if (err!=null) {
                     console.log(err);

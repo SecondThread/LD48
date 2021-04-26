@@ -1,6 +1,6 @@
 import Blood from "./Blood";
 import CollisionSeg from "./CollisionSeg";
-import drawImage, { drawCircle, drawText, getCameraPosition, ImageName, setCameraPosition, setCameraWidth} from "./drawing/ImageLoader";
+import drawImage, { drawCircle, drawText, getCameraPosition, getCameraWidth, ImageName, setCameraPosition, setCameraWidth} from "./drawing/ImageLoader";
 import GameObject from './GameObject';
 import Vec, { lerpV } from './geo/Vec';
 import Target from "./Target";
@@ -32,6 +32,8 @@ class Frog extends GameObject {
     lastTimeDied: number = 0;
     isShark: boolean;
     name: string;
+    money: number = 0;
+    moneyInBank: number = 0;
 
     constructor(position: Vec, velocity: Vec, isMe: boolean, _id: string, lastTimeUpdated: number, isShark: boolean, name: string) {
         super();
@@ -50,8 +52,8 @@ class Frog extends GameObject {
     update(collisionSegs: CollisionSeg[], targets: Target[], frogs: Frog[], createObject: (x: GameObject) => void,
             killPlayer: (idToKill: string) => void): void {
         if (this.isMe) {
-            //setCameraWidth(this.isShark?60:40);
-            setCameraWidth(200);
+            setCameraWidth(this.isShark?60:40);
+            //setCameraWidth(200);
         }
         if (this.isShark) {
             this.onTarget=false;
@@ -175,6 +177,11 @@ class Frog extends GameObject {
 
         const color=this.isShark?"#333333":"#33ee33"
         drawText(this.name, this.position.add(yAdd), color);
+
+        if (this.isMe && !this.isShark) {
+            drawText("$"+this.money, getCameraPosition().add(new Vec(getCameraWidth()*.4, getCameraWidth()*.15)), "#eeee00", "50");
+            drawText("$"+this.moneyInBank+" in bank", getCameraPosition().add(new Vec(getCameraWidth()*.4, getCameraWidth()*.13)), "#eeee00", "30");
+        }
     }
 
     processClick(mouseClick: Vec, targets: Target[]): void {
@@ -184,8 +191,8 @@ class Frog extends GameObject {
 
         if (this.isShark) {
             const dirToMouse = mouseClick.sub(this.position).unit();
-            if (Math.abs(dirToMouse.y)>0.7) {
-                return;
+            if (Math.abs(dirToMouse.y)>0.5) {
+                dirToMouse.y=0.5*Math.sign(dirToMouse.y);
             }
             this.velocity=this.velocity.add(dirToMouse.scale(0.4));
             return;

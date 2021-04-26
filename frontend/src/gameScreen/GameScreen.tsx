@@ -11,6 +11,7 @@ import CollisionSeg from './CollisionSeg';
 import Frog from './Frog';
 import getRoomInfo from './getRoomInfo';
 import Blood from './Blood';
+import Treasure from './Treasure';
 
 type Props = {
   roomId: string,
@@ -69,6 +70,19 @@ const myFrog=new Frog(new Vec(10, -10), new Vec(0, 0), true, "", new Date().getT
 let otherPlayers: Array<Frog> = [];
 
 const gameObjects: Array<GameObject> = [
+
+  new Treasure("COIN", new Vec(-40, 5), 3, false),
+  new Treasure("COIN", new Vec(-80, -14), 3, false),  
+  new Treasure("COIN", new Vec(84, 5), 3, false),
+  new Treasure("COIN", new Vec(0, 5), 3, false),
+  new Treasure("COIN", new Vec(-75, 5), 3, false),
+
+  new Treasure("TREASURE", new Vec(-55, -45), 8, false),
+  new Treasure("TREASURE", new Vec(22, -45), 8, false),
+  new Treasure("TREASURE", new Vec(4, -30), 8, true),
+  new Treasure("TREASURE", new Vec(75, -45), 8, false),
+  
+
   //islands
   new Island("ISLAND2", new Vec(-70, 9.5), 30, 40, true),
   new Island("ISLAND1", new Vec(-35, 10), 35, 30, false),
@@ -243,11 +257,11 @@ function GameScreen(props: Props) {
 
     const toAdd=Array<GameObject>();
     for (const gameObject of gameObjects) {
-      gameObject.update(collisionSegs, targets, otherPlayers, x => toAdd.push(x), x => killPlayer(props.roomId, x));
+      gameObject.update(collisionSegs, targets, otherPlayers, x => toAdd.push(x), x => killPlayer(props.roomId, x), myFrog);
     }
     for (const gameObject of targets) {
       //we don't want other players messing with our targets
-      gameObject.update(collisionSegs, [], otherPlayers, x => toAdd.push(x), x => killPlayer(props.roomId, x));
+      gameObject.update(collisionSegs, [], otherPlayers, x => toAdd.push(x), x => killPlayer(props.roomId, x), myFrog);
     }
     for (const gameObject of otherPlayers) {
       gameObject.update(collisionSegs, targets, otherPlayers, x => toAdd.push(x), x => killPlayer(props.roomId, x));
@@ -287,6 +301,7 @@ function GameScreen(props: Props) {
           if (!myFrog.isShark && myFrog.lastTimeDied<me.lastTimeDied) {
             console.log("Looks like I died, respawning.");
             myFrog.lastTimeDied=me.lastTimeDied;
+            myFrog.money=0;
             gameObjects.push(new Blood(myFrog.position));
             const targetIndex=Math.floor(Math.random()*11);
             myFrog.position=targets[targetIndex].position;
