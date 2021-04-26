@@ -45,7 +45,7 @@ class Bank extends GameObject {
         if (!this.showText) return;
         const distFromBuyRocket=this.buyRocketCenter.sub(mouseClick).mag();
         if (distFromBuyRocket < 3) {
-            if (this.myFrog!.moneyInBank>200) {
+            if (this.myFrog!.moneyInBank>=200) {
             // if (true) {
                 toast.success('Congratulations!');
                 fetch('/api/markFrogsWon', {

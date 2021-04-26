@@ -10,7 +10,7 @@ async function createRoom(req: Request<any>, res: Response<any>): Promise<void> 
             frogsWon: false,
             players: [],
             startTime: now+30*1000,
-            endTime: now+30*1000+60*1000,
+            endTime: now+30*1000+100*1000,
         });
         const createdId = created._id;
         console.log('Creating private room with id: '+createdId);
