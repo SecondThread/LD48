@@ -42,7 +42,7 @@ class Treasure extends GameObject {
             this.percentCaptured+=this.image==="TREASURE"?0.003:0.01;
         }
         else {
-            this.percentCaptured-=this.image==="TREASURE"?0.006:0.002;
+            this.percentCaptured-=this.image==="TREASURE"?0.0006:0.002;
         }
         this.percentCaptured=Math.min(1, Math.max(this.percentCaptured, 0));
         if (this.percentCaptured>=1) {
