@@ -13,6 +13,8 @@ type Props= {
 };
 
 function RoomScreen(props: Props) {
+  console.log('Props: ');
+  console.log(props);
     const [myId, setMyId] = useState(null);
     const [endTime, setEndTime] = useState(0);
     const [players, setPlayers] = useState(Array<Player>());
