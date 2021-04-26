@@ -213,7 +213,7 @@ function resetRoom(roomId: string, nickname: string) {
     console.log('Got response: '+data);
     const json=JSON.parse(data);
     console.log(json);
-    window.location.href="http://deeperunder:3000/room/"+roomId+"?nickname="+nickname;
+    window.location.href="http://deeperunder/room/"+roomId+"?nickname="+nickname;
   }).catch((e) => console.log(e)));
 }
 
