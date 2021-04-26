@@ -5,7 +5,7 @@ import Room from '../models/Room';
 async function joinPublicRoom(req: Request<any>, res: Response<any>): Promise<void> {
     try {
         const validRooms: any = await Room.find({isPrivate: false});
-        const first =validRooms==null? null: validRooms.find((x: any) => x.players.length<5);
+        const first = validRooms == null ? null : validRooms.find((x: any) => x.players.length<5);
         const SECOND_UNTIL_START=15;
         if (first==null ) {
             const now=new Date().getTime();

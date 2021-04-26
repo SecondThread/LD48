@@ -1,17 +1,23 @@
 import {Request, Response} from 'express';
 import Room from '../models/Room';
 
-async function killPlayer(req: Request<any>, res: Response<any>): Promise<void> {
+function killPlayer(req: Request<any>, res: Response<any>): void {
     try {
         console.log('Updating player location');
         const {userId, roomId} = req.body;
-        await Room.updateOne({ _id: roomId, "players._id": userId },  {
+        Room.updateOne({ _id: roomId, "players._id": userId },  {
             $set: {
                 "players.$.lastTimeDied": new Date().getTime(),
             },
         },
-        {});
-        res.status(200).json({okay: "Okay"}).send();
+        {},
+        (err, doc) => {
+            if (err != null) {
+                res.status(500).send();
+                return;
+            }
+            res.status(200).json({okay: "Okay"}).send();
+        });
     }
     catch(e) {
         console.log(e);

@@ -1,6 +1,6 @@
 import { toast } from "react-toastify";
 import CollisionSeg from "./CollisionSeg";
-import { drawCircle, drawText } from "./drawing/ImageLoader";
+import { drawText } from "./drawing/ImageLoader";
 import Frog from "./Frog";
 import GameObject from "./GameObject";
 import Vec from "./geo/Vec";

@@ -10,6 +10,10 @@ async function resetRoom(req: Request<any>, res: Response<any>): Promise<void> {
                 console.log(err);
                 return;
             }
+            if (doc==null) {
+                res.status(500).send();
+                return;
+            }
             if (doc.endTime>new Date().getTime()) {
                 res.status(200).send(doc._id);
                 //then we already have reset this room, ignore this request, but consider it a success
@@ -25,6 +29,8 @@ async function resetRoom(req: Request<any>, res: Response<any>): Promise<void> {
             doc.save((err:any, result:any) => {
                 if (err!=null) {
                     console.log(err);
+                    res.status(500).send();
+                    return;
                 }
                 res.status(201).send(doc._id);
             });

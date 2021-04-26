@@ -8,6 +8,11 @@ function addPlayerToRoom(req: Request<any>, res: Response<any>): void {
     Room.findById(roomId, (err: Error, doc: IRoom) => {
         if (err) {
             console.log(err);
+            res.status(500).send();
+            return;
+        }
+        if (doc==null) {
+            res.status(500).send();
             return;
         }
         doc.players.push({

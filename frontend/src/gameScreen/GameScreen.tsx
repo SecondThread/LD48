@@ -1,5 +1,4 @@
-import {useEffect, useRef} from 'react';
-import drawImage, { drawText, getCameraPosition, screenPointToWorldPoint, setCTX, getCameraWidth, setCameraWidth } from './drawing/ImageLoader';
+import drawImage, { drawText, getCameraPosition, screenPointToWorldPoint, setCTX, getCameraWidth } from './drawing/ImageLoader';
 import GameObject from './GameObject';
 import BubbleSource from './BubbleSource';
 import Island from './Island';
@@ -13,6 +12,7 @@ import getRoomInfo from './getRoomInfo';
 import Blood from './Blood';
 import Treasure from './Treasure';
 import Bank from './Bank';
+import { useRef, useEffect } from 'react';
 
 type Props = {
   roomId: string,
@@ -213,7 +213,7 @@ function resetRoom(roomId: string, nickname: string) {
     console.log('Got response: '+data);
     const json=JSON.parse(data);
     console.log(json);
-    window.location.href="http://deeperunder/room/"+roomId+"?nickname="+nickname;
+    window.location.href="https://deeperunder.com/room/"+roomId+"?nickname="+nickname;
   }).catch((e) => console.log(e)));
 }
 
@@ -334,8 +334,8 @@ function GameScreen(props: Props) {
           }
         }
 
-        room.players.filter(x => x._id !== props.playerId)
-          .map(player =>  {
+        const othersInRoom = room.players.filter(x => x._id !== props.playerId);
+        for (const player of othersInRoom) {
             const matching=otherPlayers.find(x => x._id===player._id);
             if (matching==null) {
               otherPlayers.push(new Frog(new Vec(player.x, player.y), new Vec(player.xVel, player.yVel), false, player._id, player.timeUpdated, player.isShark, player.username));
@@ -356,7 +356,7 @@ function GameScreen(props: Props) {
               }
             }
             
-          });
+          }
       });
     }
 

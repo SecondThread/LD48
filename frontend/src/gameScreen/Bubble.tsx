@@ -1,5 +1,3 @@
-import { METHODS } from "node:http";
-import { textSpanIntersectsWithPosition } from "typescript";
 import CollisionSeg from "./CollisionSeg";
 import drawImage from "./drawing/ImageLoader";
 import GameObject from "./GameObject";
